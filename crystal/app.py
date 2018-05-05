@@ -16,7 +16,7 @@ from flask import Flask, render_template, jsonify
 # Get main dataset directory
 home_dir = os.path.expanduser("~")
 main_data_dir = home_dir + "/Crystal_data"
-database_name = "/crystal_test.db"
+database_name = "/crystal.db"  # TODO: Change this name
 
 app = Flask(__name__)
 
@@ -26,7 +26,8 @@ current_index = {}
 @app.route('/')
 def index():
     """
-    Renders the html file when the server is initially run.
+    Renders the dashboard when the server is initially run.
+    Points to the latest run under the latest project by default.
     :return: Object that is taken care by flask.
     """
     # Get figure stats

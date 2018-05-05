@@ -1,42 +1,43 @@
 import os
+import sys
 import sqlite3
 import datetime
 import numpy as np
 
 
-def get_time_stamp(path):
+def get_valid_time_stamp():
     """
     Gets the timestamp from the provided path.
     :param path: String, the complete path where data is stored for the run.
     :return: String, extracted timestamp
     """
-    for i in path.split("/"):
-        if "Time_" in i:
-            # Remove all the invalid chars for SQL table names
-            i = i.replace("-", "_").replace(":", "_").replace(" ", "_").replace(".", "_")
-            return i
-    raise ValueError('Not able to find the data directory, make sure that the File starts with Time')
+    time_stamp = "{}".format(datetime.datetime.now())
+    time_stamp = time_stamp.replace("-", "_").replace(":", "_").replace(" ", "_").replace(".", "_")
+    return time_stamp
 
 
-class NeuroViz:
+class Crystal:
     """
     Provides methods to store various types of data onto the database.
     """
-    def __init__(self, project_name, file_path):
-        self.project_name = project_name
-        self.file_path = file_path
-        self.time_stamp = get_time_stamp(self.file_path)
+    def __init__(self):
+        self.called_from = os.path.realpath(sys.argv[0])
+        self.project_name = os.path.basename(self.called_from)[:-3]  # Remove .py, TODO: Change for other languages
+        self.time_stamp = get_valid_time_stamp()
         self.previous = [None]
 
         # Create a new database on the home directory
         home_dir = os.path.expanduser("~")
-        main_data_dir = home_dir + "/NeuroViz_data"
-        database_name = "/neuroviz_test.db"
+        main_data_dir = home_dir + "/Crystal_data"
+        database_name = "/crystal.db"
         if not os.path.exists(main_data_dir):
+            print("Crystal_data directory not found. Making a new one now.")
             os.mkdir(main_data_dir)
 
+        # Create new project and run tables if not already found
         self.conn = sqlite3.connect(main_data_dir + database_name)
         self.c = self.conn.cursor()
+
         self.run_table_name = self.project_name+'_'+'run_table'
         self.c.execute("""CREATE TABLE IF NOT EXISTS main_table (
                           project_name VARCHAR
@@ -122,3 +123,4 @@ class NeuroViz:
 
     def fft(self):
         pass
+

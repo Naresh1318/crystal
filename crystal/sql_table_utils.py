@@ -63,7 +63,7 @@ def drop_project(project_name, conn):
     print("{} project deleted".format(project_name))
 
 
-def get_latest_tables_from_project():
+def get_latest_tables_from_latest_project():
     conn = sqlite3.connect(main_data_dir + database_name)
     c = conn.cursor()
 
@@ -92,7 +92,7 @@ def get_figure_stats(run_table_name):
 
 
 def get_latest_stats():
-    latest_run_name = get_latest_tables_from_project()
+    latest_run_name = get_latest_tables_from_latest_project()
     variable_names = get_figure_stats(latest_run_name)
     latest_stats = {'latest_run': latest_run_name, 'variable_names': variable_names}
 

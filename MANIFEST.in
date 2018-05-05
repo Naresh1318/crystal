@@ -1,0 +1,2 @@
+recursive-include crystal/templates *
+recursive-include crystal/static *
