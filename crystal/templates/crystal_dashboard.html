@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>NeuroViz</title>
+    <title>Crystal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="{{ url_for('static', filename='js/plotly-latest.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/materialize.min.css') }}" media="screen,projection">
@@ -30,7 +30,7 @@
 
     // Plotting parameters
     // TODO: Get this value from the user
-    var refresh_time = 1000; // Refresh time in ms
+    var refresh_time = 500; // Refresh time in ms
 
 
     {% for v_n in variable_names %}

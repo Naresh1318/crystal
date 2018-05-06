@@ -5,8 +5,8 @@ import numpy as np
 
 # Get main dataset directory
 home_dir = os.path.expanduser("~")
-main_data_dir = home_dir + "/NeuroViz_data"
-database_name = "/neuroviz_test.db"
+main_data_dir = home_dir + "/Crystal_data"
+database_name = "/crystal.db"
 
 
 def drop_run(project_name, run_name, conn):
@@ -19,7 +19,7 @@ def drop_run(project_name, run_name, conn):
     c = conn.cursor()
     # delete all the variable tables first
     c.execute("SELECT variable_name FROM {}".format(run_name))
-    all_variables = np.array(c.fetchall()).squeeze()
+    all_variables = np.array(c.fetchall()).squeeze(axis=1)
     for i in all_variables:
         variable_table_name = run_name + '_' + i
         c.execute("""DROP TABLE IF EXISTS {}""".format(variable_table_name))
@@ -49,7 +49,7 @@ def drop_project(project_name, conn):
     run_table_name = project_name + '_run_table'
 
     c.execute("SELECT run_name FROM {}".format(run_table_name))
-    run_names = np.array(c.fetchall()).squeeze()
+    run_names = np.array(c.fetchall()).squeeze(axis=1)
 
     # remove one run at a time
     for run in run_names:
@@ -75,7 +75,8 @@ def get_latest_tables_from_latest_project():
     # Get latest run
     c.execute("""SELECT run_name FROM {}""".format(latest_project_name + "_run_table"))
     run_names = np.array(c.fetchall())
-    latest_run_name = np.squeeze(run_names)[-1]
+
+    latest_run_name = np.squeeze(run_names, 1)[-1]
 
     return latest_run_name
 
@@ -97,14 +98,3 @@ def get_latest_stats():
     latest_stats = {'latest_run': latest_run_name, 'variable_names': variable_names}
 
     return latest_stats
-
-
-# TODO: Used for debugging remove later
-# import os
-# import sqlite3
-# home_dir = os.path.expanduser("~")
-# main_data_dir = home_dir + "/NeuroViz_data"
-# database_name = "/neuroviz_test.db"
-# conn = sqlite3.connect(main_data_dir + database_name)
-# drop_project("smr_cnn_classifier", conn)
-

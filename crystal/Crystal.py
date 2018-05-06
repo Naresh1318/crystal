@@ -8,25 +8,36 @@ import numpy as np
 def get_valid_time_stamp():
     """
     Gets the timestamp from the provided path.
+    Adds time_ to make the time stamp a vaid table name in sql.
     :param path: String, the complete path where data is stored for the run.
     :return: String, extracted timestamp
     """
-    time_stamp = "{}".format(datetime.datetime.now())
-    time_stamp = time_stamp.replace("-", "_").replace(":", "_").replace(" ", "_").replace(".", "_")
+    time_stamp = str(datetime.datetime.now())
+    time_stamp = "time_" + time_stamp.replace("-", "_").replace(":", "_").replace(" ", "_").replace(".", "_")
     return time_stamp
 
 
 class Crystal:
     """
     Provides methods to store various types of data onto the database.
+    docs:
+    * Creates a new project using the script name if no project name has been provided.
+    * Creates a new run table for every class instantiation.
     """
-    def __init__(self):
+
+    def __init__(self, project_name=None):
         self.called_from = os.path.realpath(sys.argv[0])
-        self.project_name = os.path.basename(self.called_from)[:-3]  # Remove .py, TODO: Change for other languages
+
+        if project_name is None:
+            self.project_name = os.path.basename(self.called_from)[:-3]
+            self.project_name = self.project_name.split(".")[0]
+        else:
+            self.project_name = project_name
+
         self.time_stamp = get_valid_time_stamp()
         self.previous = [None]
 
-        # Create a new database on the home directory
+        # Create a new database on the home directory if not present
         home_dir = os.path.expanduser("~")
         main_data_dir = home_dir + "/Crystal_data"
         database_name = "/crystal.db"
@@ -38,7 +49,7 @@ class Crystal:
         self.conn = sqlite3.connect(main_data_dir + database_name)
         self.c = self.conn.cursor()
 
-        self.run_table_name = self.project_name+'_'+'run_table'
+        self.run_table_name = self.project_name + '_' + 'run_table'
         self.c.execute("""CREATE TABLE IF NOT EXISTS main_table (
                           project_name VARCHAR
                           )""")
@@ -69,6 +80,7 @@ class Crystal:
         self.c.execute("""CREATE TABLE IF NOT EXISTS {} (
                           variable_name VARCHAR, variable_type VARCHAR
                           )""".format(self.time_stamp))
+        self.conn.commit()
 
     def scalar(self, value, step, name):
         """
@@ -94,9 +106,10 @@ class Crystal:
                                       x=step, y=value, time=datetime.datetime.now()))
         self.conn.commit()
 
+    # TODO: Test this
     def image(self, image, name):
         """
-        Show image on the NeuroViz server.
+        Show image on the Crystal server.
         :param image:
         :param name:
         :return:
@@ -123,4 +136,3 @@ class Crystal:
 
     def fft(self):
         pass
-
