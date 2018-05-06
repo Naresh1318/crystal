@@ -16,11 +16,11 @@ from flask import Flask, render_template, jsonify
 # Get main dataset directory
 home_dir = os.path.expanduser("~")
 main_data_dir = home_dir + "/Crystal_data"
-database_name = "/crystal.db"  # TODO: Change this name
+database_name = "/crystal.db"
 
 app = Flask(__name__)
 
-current_index = {}
+current_index = {}  # Used to keep track of the index for plotting
 
 
 @app.route('/')
@@ -52,12 +52,12 @@ def update():
     # Get figure stats
     latest_stats = utils.get_latest_stats()
     latest_run = latest_stats['latest_run']
-    variable_names = latest_stats['variable_names']
+    variable_names = latest_stats['variable_names'].squeeze(axis=1)
 
-    initial_data = {}
+    data = {}
+    for v_n in variable_names:
+        data[v_n] = {'x': [], 'y': []}
 
-    # TODO: I think this will slow things down, try avoiding getting all the elements from the database
-    global current_index
     if len(current_index) < 1:
         for v_n in variable_names:
             current_index["{}".format(v_n)] = 0
@@ -67,16 +67,18 @@ def update():
 
     # values for each variable
     for v_n in variable_names:
-        c.execute("""SELECT * FROM {}""".format(latest_run + "_" + v_n[0]))
+        c.execute("""SELECT * FROM {} WHERE rowid > {}""".format(latest_run + "_" + v_n, current_index[v_n]))
+
+        values = np.array(c.fetchall())
         try:
-            values = np.array(c.fetchall())
-            initial_data[v_n[0]] = {'x': values[current_index["{}".format(v_n)]:, 0].tolist(), 'y': values[current_index["{}".format(v_n)]:, 1].tolist()}
-            current_index["{}".format(v_n)] = len(values[:, 0].tolist())
+            n_values = len(values[:, 0].tolist())
+            data[v_n] = {'x': values[:, 0].tolist(), 'y': values[:, 1].tolist()}
+            current_index["{}".format(v_n)] += n_values
             print("New value found and updated")
         except IndexError:
             print("No new data point found")
 
-    return jsonify(initial_data)
+    return jsonify(data)
 
 
 if __name__ == '__main__':
