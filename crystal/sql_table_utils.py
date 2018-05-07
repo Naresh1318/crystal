@@ -98,3 +98,17 @@ def get_latest_stats():
     latest_stats = {'latest_run': latest_run_name, 'variable_names': variable_names}
 
     return latest_stats
+
+
+def get_projects():
+    conn = sqlite3.connect(main_data_dir + database_name)
+    c = conn.cursor()
+    c.execute("""SELECT project_name FROM main_table""")
+    project_names = np.array(c.fetchall()).squeeze(axis=1)
+    project_names = convert_list_to_dict(project_names)
+    return project_names
+
+
+def convert_list_to_dict(input_list):
+    return {k: v for k, v in enumerate(input_list)}
+

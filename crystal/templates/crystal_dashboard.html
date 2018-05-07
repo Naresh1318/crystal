@@ -1,85 +1,48 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <title>Crystal</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="%% url_for('static',filename='css/materialize.min.css') %%" media="screen,projection">
+        <script src="%% url_for('static', filename='js/plotly-latest.min.js') %%"></script>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="%% url_for('static',filename='js/materialize.min.js') %%"></script>
+        <script src="https://unpkg.com/vue"></script>
+    </head>
 
-<head>
-    <title>Crystal</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="{{ url_for('static', filename='js/plotly-latest.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/materialize.min.css') }}" media="screen,projection">
-</head>
+    <body>
 
-<body>
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="{{ url_for('static',filename='js/materialize.min.js') }}"></script>
+        <div id="vue-app">
 
-<div class="row">
-    <div class="col s1">Tools</div>
+            <button v-on:click="refresh()">Refresh</button>
+            <br/>
+            <h4>Project Name: {{}} </h4>
+            <br/>
+            <h4>Run Name: {{}} </h4>
+            <br/>
+            <button v-on:click="get_projects()">Show all projects</button>
 
-    <div class="col s10">
-        <h1>Run name: {{latest_run}}</h1>
+            <ul style="padding: auto">
+                <li v-for="value in all_projects">
+                    {{ value }}
+                </li>
+            </ul>
 
-        {% for v_n in variable_names %}
-        <div id="{{v_n[0]}}"></div>
-        {% endfor %}
-    </div>
+        </div>
 
-</div>
-
-
-<script>
-
-    // Plotting parameters
-    // TODO: Get this value from the user
-    var refresh_time = 500; // Refresh time in ms
-
-
-    {% for v_n in variable_names %}
-    var trace_{{v_n[0]}} = [{
-        x: [],
-        y: [],
-        type: 'scatter'
-    }];
-
-    Plotly.newPlot('{{v_n[0]}}', trace_{{v_n[0]}});
-    {% endfor %}
-
-
-    function updateGraphs() {
-        var xmlhhtp = new XMLHttpRequest(),
-            method = "GET",
-            url = "{{url_for('update')}}";
-
-        xmlhhtp.open(method, url, true);
-        xmlhhtp.onreadystatechange = function () {
-            if (this.readyState === XMLHttpRequest.DONE && this.status === 200){
-                console.log(JSON.parse(xmlhhtp.responseText));
-
-                var receivedJSON = JSON.parse(xmlhhtp.responseText);
-
+        <div class="row">
+            <div class="col s1">Tools</div>
+            <div class="col s10">
+                <h1>Run name: %%latest_run%%</h1>
                 {% for v_n in variable_names %}
-
-                var update_{{v_n[0]}} = {
-                    x:  [receivedJSON['{{v_n[0]}}']['x']],
-                    y: [receivedJSON['{{v_n[0]}}']['y']]
-                };
-
-                console.log(receivedJSON['{{v_n[0]}}']['x']);
-
-                Plotly.extendTraces('{{v_n[0]}}', update_{{v_n[0]}}, [0]);
-
+                <div id="%%v_n[0]%%"></div>
                 {% endfor %}
-
-            }
-        };
-        xmlhhtp.send()
-    }
-
-    // TODO: Do something that know when it hasn't received anything when you send a request.
-    var timer = setInterval(function () {
-        updateGraphs();
-    }, refresh_time);
-
-</script>
-</body>
-
+            </div>
+        </div>
+        <script>
+            <!-- TODO: Update only the required elements -->
+            {% include 'js/test_js.js' %}
+        </script>
+    </body>
 </html>

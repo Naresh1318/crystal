@@ -18,9 +18,18 @@ home_dir = os.path.expanduser("~")
 main_data_dir = home_dir + "/Crystal_data"
 database_name = "/crystal.db"
 
-app = Flask(__name__)
-
 current_index = {}  # Used to keep track of the index for plotting
+
+
+class CustomFlask(Flask):
+    jinja_options = Flask.jinja_options.copy()
+    jinja_options.update(dict(
+        variable_start_string='%%',  # Default is '{{', I'm changing this because Vue.js uses '{{' / '}}'
+        variable_end_string='%%',
+    ))
+
+
+app = CustomFlask(__name__)  # This replaces your existing "app = Flask(__name__)"
 
 
 @app.route('/')
@@ -79,6 +88,12 @@ def update():
             print("No new data point found")
 
     return jsonify(data)
+
+
+@app.route('/get_projects')
+def get_projects():
+    projects = utils.get_projects()
+    return jsonify(projects)
 
 
 if __name__ == '__main__':
