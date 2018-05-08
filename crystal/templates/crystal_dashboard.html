@@ -22,6 +22,10 @@
                 </div>
 
                 <div class="col">
+                    <button v-on:click="show_plots()" class="btn btn-dark">Show Plots</button>
+                </div>
+
+                <div class="col">
                     <div class="dropdown">
                         <button v-on:click="get_projects()" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                             Select Project
@@ -49,7 +53,7 @@
 
             </div>
 
-            <div v-for="value in current_variables" :id="value">
+            <div v-for="value in current_variables" v-bind:id="value" style="height: 300px">
                 {{value}}
             </div>
 
