@@ -13,13 +13,10 @@
 
     <body>
 
-    <div class="jumbotron">
-        <div id="vue-app" class="m-2 container-fluid">
-            <div class="row">
+    <div id="vue-app" class="container-fluid">
 
-                <div class="col">
-                    <button v-on:click="refresh()" class="btn btn-dark">Refresh</button>
-                </div>
+        <div class="jumbotron">
+            <div class="row">
 
                 <div class="col">
                     <div class="dropdown">
@@ -27,7 +24,7 @@
                             Select Project
                         </button>
                         <div class="dropdown-menu">
-                            <a v-on:click="set_project(value)" v-for="value in all_projects" class="dropdown-item" href="#">
+                            <a v-for="value in all_projects" class="dropdown-item" href="#">
                                 {{value}}
                             </a>
                         </div>
@@ -40,7 +37,7 @@
                             Select Run
                         </button>
                         <div class="dropdown-menu">
-                            <a v-on:click="set_run(value)" v-for="value in all_current_runs" class="dropdown-item" href="#">
+                            <a v-for="value in all_projects" class="dropdown-item" href="#">
                                 {{value}}
                             </a>
                         </div>
@@ -48,18 +45,10 @@
                 </div>
 
             </div>
-
-            <div v-for="value in current_variables" :id="value">
-                {{value}}
-            </div>
-
         </div>
+
+
     </div>
-
-    <br/>
-
-
-
     <!-- Libraries -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>

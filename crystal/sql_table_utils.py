@@ -8,6 +8,14 @@ home_dir = os.path.expanduser("~")
 main_data_dir = home_dir + "/Crystal_data"
 database_name = "/crystal.db"
 
+# TODO: Close database connections in all functions
+
+
+def open_data_base_connection():
+    conn = sqlite3.connect(main_data_dir + database_name)
+    c = conn.cursor()
+    return conn, c
+
 
 def drop_run(project_name, run_name, conn):
     """
@@ -63,7 +71,7 @@ def drop_project(project_name, conn):
     print("{} project deleted".format(project_name))
 
 
-def get_latest_tables_from_latest_project():
+def get_latest_run():
     conn = sqlite3.connect(main_data_dir + database_name)
     c = conn.cursor()
 
@@ -81,6 +89,22 @@ def get_latest_tables_from_latest_project():
     return latest_run_name
 
 
+def get_latest_project_and_runs():
+    conn = sqlite3.connect(main_data_dir + database_name)
+    c = conn.cursor()
+
+    # Get latest project
+    c.execute("""SELECT project_name FROM main_table""")
+    project_names = np.array(c.fetchall())
+    latest_project_name = project_names[-1][-1]
+
+    # Get latest run
+    c.execute("""SELECT run_name FROM {}""".format(latest_project_name + "_run_table"))
+    run_names = np.array(c.fetchall()).squeeze(axis=1)
+
+    return {"latest_project": latest_project_name, "latest_runs": run_names}
+
+
 def get_figure_stats(run_table_name):
     conn = sqlite3.connect(main_data_dir + database_name)
     c = conn.cursor()
@@ -93,7 +117,7 @@ def get_figure_stats(run_table_name):
 
 
 def get_latest_stats():
-    latest_run_name = get_latest_tables_from_latest_project()
+    latest_run_name = get_latest_run()
     variable_names = get_figure_stats(latest_run_name)
     latest_stats = {'latest_run': latest_run_name, 'variable_names': variable_names}
 
@@ -107,6 +131,28 @@ def get_projects():
     project_names = np.array(c.fetchall()).squeeze(axis=1)
     project_names = convert_list_to_dict(project_names)
     return project_names
+
+
+def get_runs(project_name):
+    conn = sqlite3.connect(main_data_dir + database_name)
+    c = conn.cursor()
+
+    # Get latest run
+    c.execute("""SELECT run_name FROM {}""".format(project_name + "_run_table"))
+    run_names = np.array(c.fetchall()).squeeze(axis=1)
+    run_names = convert_list_to_dict(run_names)
+    return run_names
+
+
+def get_variables(run_name):
+    conn = sqlite3.connect(main_data_dir + database_name)
+    c = conn.cursor()
+
+    # Get latest project
+    c.execute("""SELECT variable_name FROM {}""".format(run_name))
+    variable_names = np.array(c.fetchall()).squeeze(axis=1)
+    variable_names = convert_list_to_dict(variable_names)
+    return variable_names
 
 
 def convert_list_to_dict(input_list):

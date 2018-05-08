@@ -10,7 +10,7 @@ import os
 import sqlite3
 import numpy as np
 import crystal.sql_table_utils as utils
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 
 
 # Get main dataset directory
@@ -40,12 +40,12 @@ def index():
     :return: Object that is taken care by flask.
     """
     # Get figure stats
-    latest_stats = utils.get_latest_stats()
-    latest_run = latest_stats['latest_run']
-    variable_names = latest_stats['variable_names']
+    latest_stats = utils.get_latest_project_and_runs()
+    latest_runs = latest_stats['latest_runs']
+    latest_project = latest_stats['latest_project']
 
     # render the template (below) that will use JavaScript to read the stream
-    return render_template("crystal_dashboard.html", latest_run=latest_run, variable_names=variable_names)
+    return render_template("crystal_dashboard.html", latest_runs=latest_runs, latest_project=latest_project)
 
 
 @app.route('/update')
@@ -94,6 +94,23 @@ def update():
 def get_projects():
     projects = utils.get_projects()
     return jsonify(projects)
+
+
+@app.route('/get_runs', methods=['POST', 'GET'])
+def get_runs():
+    if request.method == "POST":
+        selected_project = request.form["selected_project"]
+        runs = utils.get_runs(selected_project)
+        return jsonify(runs)
+    # TODO: Add catches
+
+
+@app.route('/get_variables', methods=['POST', 'GET'])
+def get_variables():
+    if request.method == "POST":
+        selected_run = request.form["selected_run"]
+        variables = utils.get_variables(selected_run)
+        return jsonify(variables)
 
 
 if __name__ == '__main__':
