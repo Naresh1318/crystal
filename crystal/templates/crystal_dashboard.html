@@ -13,56 +13,63 @@
 
     <body>
 
-    <div class="jumbotron">
-        <div id="vue-app" class="m-2 container-fluid">
-            <div class="row">
+    <div id="vue-app">
+        <div class="jumbotron">
+            <div class="m-2 container-fluid">
+                <div class="row">
 
-                <div class="col">
-                    <button v-on:click="refresh()" class="btn btn-dark">Refresh</button>
-                </div>
+                    <div class="col">
+                        <button v-on:click="refresh()" class="btn btn-dark">Refresh</button>
+                    </div>
 
-                <div class="col">
-                    <button v-on:click="show_plots()" class="btn btn-dark">Show Plots</button>
-                </div>
-
-                <div class="col">
-                    <div class="dropdown">
-                        <button v-on:click="get_projects()" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                            Select Project
-                        </button>
-                        <div class="dropdown-menu">
-                            <a v-on:click="set_project(value)" v-for="value in all_projects" class="dropdown-item" href="#">
-                                {{value}}
-                            </a>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button v-on:click="get_projects()" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                Select Project
+                            </button>
+                            <div class="dropdown-menu">
+                                <a v-on:click="set_project(value)" v-for="value in all_projects" class="dropdown-item" href="#">
+                                    {{value}}
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col">
-                    <div class="dropdown">
-                        <button v-on:click="get_runs()" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                            Select Run
-                        </button>
-                        <div class="dropdown-menu">
-                            <a v-on:click="set_run(value)" v-for="value in all_current_runs" class="dropdown-item" href="#">
-                                {{value}}
-                            </a>
+                    <div class="col">
+                        <div class="dropdown">
+                            <button v-on:click="get_runs()" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                Select Run
+                            </button>
+                            <div class="dropdown-menu">
+                                <a v-on:click="set_run(value)" v-for="value in all_current_runs" class="dropdown-item" href="#">
+                                    {{value}}
+                                </a>
+                            </div>
                         </div>
                     </div>
+
+                    <div class="col">
+                        <button v-on:click="show_plots()" class="btn btn-secondary">Get plots</button>
+                    </div>
+
+                    <div class="col">
+                        <button v-on:click="set_refresh()">
+                            {{refresh_button_text}}
+                        </button>
+                    </div>
+
                 </div>
 
             </div>
+        </div>
 
-            <div v-for="value in current_variables" v-bind:id="value" style="height: 300px">
-                {{value}}
-            </div>
+        <div v-for="value in current_variables" v-bind:id="value" style="height: 300px">
 
         </div>
+
     </div>
 
     <br/>
-
-
 
     <!-- Libraries -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -72,10 +79,7 @@
     <script src="https://unpkg.com/vue"></script>
 
     <!-- My code -->
-    <script>
-        <!-- TODO: Update only the required elements -->
-        {% include 'js/test_js.js' %}
-    </script>
+    <script> {% include 'js/crystal_dashboard.js' %} </script>
 
 
     </body>

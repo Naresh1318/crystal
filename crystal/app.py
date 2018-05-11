@@ -38,6 +38,13 @@ def index():
     Points to the latest run under the latest project by default.
     :return: Object that is taken care by flask.
     """
+    # Reset current index values
+    print(current_index)
+    for k, v in current_index.items():
+        current_index[k] = 0
+
+    print("Current Index reset.")
+
     # Get figure stats
     latest_stats = utils.get_latest_project_and_runs()
     latest_runs = latest_stats['latest_runs']
