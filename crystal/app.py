@@ -45,13 +45,8 @@ def index():
 
     print("Current Index reset.")
 
-    # Get figure stats
-    latest_stats = utils.get_latest_project_and_runs()
-    latest_runs = latest_stats['latest_runs']
-    latest_project = latest_stats['latest_project']
-
     # render the template (below) that will use JavaScript to read the stream
-    return render_template("crystal_dashboard.html", latest_runs=latest_runs, latest_project=latest_project)
+    return render_template("crystal_dashboard.html")
 
 
 @app.route('/update', methods=['POST', 'GET'])
@@ -80,18 +75,21 @@ def update():
         print("Update index:")
         print(current_index)
 
-        # values for each variable
-        for _, v_n in variable_names:
-            c.execute("""SELECT * FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n, current_index[v_n]))
+        try:
+            # values for each variable
+            for _, v_n in variable_names:
+                c.execute("""SELECT * FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n, current_index[v_n]))
 
-            values = np.array(c.fetchall())
-            try:
-                n_values = len(values[:, 0].tolist())
-                data[v_n] = {'x': values[:, 0].tolist(), 'y': values[:, 1].tolist()}
-                current_index["{}".format(v_n)] += n_values
-                print("New value found and updated")
-            except IndexError:
-                print("No new data point found")
+                values = np.array(c.fetchall())
+                try:
+                    n_values = len(values[:, 0].tolist())
+                    data[v_n] = {'x': values[:, 0].tolist(), 'y': values[:, 1].tolist()}
+                    current_index["{}".format(v_n)] += n_values
+                    print("New value found and updated")
+                except IndexError:
+                    print("No new data point found")
+        except KeyError:
+            print("I think the run variable has changes. So, I'm passing no data.")
 
         return jsonify(data)
 
@@ -116,6 +114,17 @@ def get_variables():
     if request.method == "POST":
         selected_run = request.form["selected_run"]
         variables = utils.get_variables(selected_run)
+
+        # Reset current_index when you select a new run
+        variable_names = variables.items()
+
+        global current_index
+        current_index = {}
+
+        if len(current_index) < 1:
+            for _, v_n in variable_names:
+                current_index["{}".format(v_n)] = 0
+
         return jsonify(variables)
 
 

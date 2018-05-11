@@ -17,6 +17,8 @@ var vue = new Vue({
         refresh: function () {
             var rq = new XMLHttpRequest();
 
+            console.log("refresh");
+
             rq.onreadystatechange = function(vm) {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
@@ -69,7 +71,7 @@ var vue = new Vue({
                     if (this.status === 200) {
                         vm.all_current_runs = JSON.parse(this.responseText);
                     } else {
-                        vm.all_current_runs = "Request Failed";
+                        vm.all_current_runs = " ";
                     }
                 }
             }.bind(rq, this);
@@ -90,7 +92,7 @@ var vue = new Vue({
                         console.log("Got it!");
                         this.run_plots_init = true;
                     } else {
-                        vm.current_variables = "Request Failed";
+                        vm.current_variables = " ";
                     }
                 }
             }.bind(rq, this);
@@ -103,6 +105,13 @@ var vue = new Vue({
             this.current_project = project_selected;
         },
         show_plots: function () {
+
+            if (this.current_variables === '') {
+                console.log("Current variables are non.");
+                this.run_plots_init = true;  // Haven't received any variables from the server
+                return false;
+            }
+
             for (var variable in this.current_variables) {
                 current_value = this.current_variables[variable];
                 var layout = {
@@ -118,16 +127,25 @@ var vue = new Vue({
                 console.log("Running plots!");
             }
             this.set_refresh();
+            return true;
         },
         set_run: function (run_selected) {
             this.current_run = run_selected;
             this.get_variables();
             this.run_plots_init = true;
-            // setTimeout(() => {
-            //     this.show_plots();
-            // }, 0);
         },
         set_refresh: function () {
+
+            if (this.run_plots_init === true){
+                clearInterval(this.timer);
+                this.refresh_button_text = "Stop Refreshing";
+                refresh();
+                this.timer = setInterval(function () {
+                    refresh();
+                }, this.refresh_time);
+                return;
+            }
+
             this.start_refreshing = !this.start_refreshing;
             if (!this.start_refreshing) {
                 this.refresh_button_text = "Start Refreshing";
@@ -144,11 +162,15 @@ var vue = new Vue({
         },
     },
 
-    // Lifecycle hooks
+    // Lifecycle hook
     updated() {
         if (this.run_plots_init === true) {
-            this.show_plots();
-            this.run_plots_init = false;
+            console.log("Run plots init is set to true");
+            plots_shown = this.show_plots();
+
+            if (plots_shown) {
+                this.run_plots_init = false;
+            }
         }
     }
 
