@@ -58,13 +58,17 @@
                         </button>
                     </div>
 
+                    <div class="col">
+                        <input type="text" v-on:keyup.enter="set_refresh_interval()" v-model="entered_refresh_time" placeholder="time in s"/>
+                    </div>
+
                 </div>
 
             </div>
         </div>
 
         <div v-for="value in current_variables" v-bind:id="value" style="height: 300px">
-
+            <button class="btn btn-dark" v-on:click="download_graph(value)">Download graph</button>
         </div>
 
     </div>

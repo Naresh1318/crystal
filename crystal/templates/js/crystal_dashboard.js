@@ -7,6 +7,7 @@ var vue = new Vue({
         current_variables: '',
         all_projects: {},
         all_current_runs: {},
+        entered_refresh_time: '',
         refresh_time: 5000,
         start_refreshing: false,
         refresh_button_text: 'Start Refreshing',
@@ -137,6 +138,7 @@ var vue = new Vue({
         set_refresh: function () {
 
             if (this.run_plots_init === true){
+                console.log("Initial Run");
                 clearInterval(this.timer);
                 this.refresh_button_text = "Stop Refreshing";
                 refresh();
@@ -146,7 +148,6 @@ var vue = new Vue({
                 return;
             }
 
-            this.start_refreshing = !this.start_refreshing;
             if (!this.start_refreshing) {
                 this.refresh_button_text = "Start Refreshing";
                 clearInterval(this.timer);
@@ -157,9 +158,22 @@ var vue = new Vue({
                 refresh();
                  this.timer = setInterval(function () {
                     refresh();
-                }, this.refresh_time);
+                 }, this.refresh_time);
             }
+            this.start_refreshing = !this.start_refreshing;
+            console.log("Refresh toggled");
         },
+        set_refresh_interval: function () {
+            this.refresh_time = parseInt(this.entered_refresh_time) * 1000;  // time needed in ms
+            clearInterval(this.timer);
+            this.timer = setInterval(function () {
+                refresh();
+            }, this.refresh_time);
+            console.log("Refresh_interval set to " + this.refresh_time);
+        },
+        download_graph: function (id) {
+            Plotly.downloadImage(id, {format: 'png', filename: id});
+        }
     },
 
     // Lifecycle hook
