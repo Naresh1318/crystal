@@ -62,7 +62,7 @@ class Crystal:
         self.c.execute("""SELECT project_name FROM main_table""")
         project_names = np.array(self.c.fetchall()).squeeze()
 
-        if not self.project_name in project_names:
+        if self.project_name not in project_names:
             self.c.execute("""INSERT INTO main_table (
                               project_name) VALUES ('{}'
                               )""".format(self.project_name))
@@ -71,7 +71,7 @@ class Crystal:
         self.c.execute("""SELECT run_name FROM {run_table}""".format(run_table=self.run_table_name))
         run_names = np.array(self.c.fetchall()).squeeze()
 
-        if not self.time_stamp in run_names:
+        if self.time_stamp not in run_names:
             self.c.execute("""INSERT INTO {} (
                               run_name) VALUES ('{}'
                               )""".format(self.run_table_name, self.time_stamp))
