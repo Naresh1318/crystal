@@ -1,4 +1,5 @@
 import os
+import csv
 import sqlite3
 import numpy as np
 
@@ -153,6 +154,21 @@ def get_variables(run_name):
     variable_names = np.array(c.fetchall()).squeeze(axis=1)
     variable_names = convert_list_to_dict(variable_names)
     return variable_names
+
+
+def generate_graph_sv(variable_table_name):
+    temp_csv = home_dir + "/PycharmProjects/crystal/crystal/temp.csv"
+    conn = sqlite3.connect(main_data_dir + database_name)
+    c = conn.cursor()
+
+    # Get variable data
+    c.execute("""SELECT * FROM {}""".format(variable_table_name))
+    with open(temp_csv, "w", newline='') as csv_file:
+        csv_writer = csv.writer(csv_file)
+        csv_writer.writerow([i[0] for i in c.description])  # write headers
+        csv_writer.writerows(c)
+        print("File saved: {}".format(temp_csv))
+        return temp_csv
 
 
 def convert_list_to_dict(input_list):

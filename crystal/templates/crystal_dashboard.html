@@ -64,12 +64,15 @@
 
                 </div>
 
+
             </div>
         </div>
 
         <div v-for="value in current_variables" v-bind:id="value" style="height: 300px">
             <button class="btn btn-dark" v-on:click="download_graph(value)">Download graph</button>
+            <button class="btn btn-primary" v-on:click="get_graph_csv(value)">Download graph CSV</button>
         </div>
+
 
     </div>
 

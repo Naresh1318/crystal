@@ -10,7 +10,7 @@ import os
 import sqlite3
 import numpy as np
 import crystal.sql_table_utils as utils
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_file
 
 # Get main dataset directory
 home_dir = os.path.expanduser("~")
@@ -126,6 +126,14 @@ def get_variables():
                 current_index["{}".format(v_n)] = 0
 
         return jsonify(variables)
+
+
+@app.route('/get_graph_csv', methods=['POST', 'GET'])
+def get_graph_csv():
+    if request.method == "POST":
+        selected_variable_table = request.form["selected_variable_table"]
+        filename = utils.generate_graph_sv(selected_variable_table)
+        return send_file("temp.csv", as_attachment=True)
 
 
 if __name__ == '__main__':

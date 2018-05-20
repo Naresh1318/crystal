@@ -4,7 +4,8 @@ var vue = new Vue({
     data: {
         current_project: "",
         current_run: "",
-        current_variables: '',
+        current_variables: "",
+        current_graph_raw_values: [],
         all_projects: {},
         all_current_runs: {},
         entered_refresh_time: '',
@@ -173,9 +174,26 @@ var vue = new Vue({
         },
         download_graph: function (id) {
             Plotly.downloadImage(id, {format: 'png', filename: id});
+        },
+        get_graph_csv: function (id) {
+            var rq = new XMLHttpRequest();
+
+            rq.onreadystatechange = function(vm) {
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    if (this.status === 200) {
+                        vm.current_graph_raw_values = JSON.parse(this.responseText);
+                    } else {
+                        vm.current_graph_raw_values = " ";
+                    }
+                }
+            }.bind(rq, this);
+
+            rq.open("POST", "/get_graph_csv", true);
+            rq.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+            rq.send("selected_variable_table="+this.current_run+"_"+id);
         }
     },
-
+    
     // Lifecycle hook
     updated() {
         if (this.run_plots_init === true) {
