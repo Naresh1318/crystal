@@ -156,8 +156,8 @@ def get_variables(run_name):
     return variable_names
 
 
-def generate_graph_sv(variable_table_name):
-    temp_csv = home_dir + "/PycharmProjects/crystal/crystal/temp.csv"
+def generate_graph_csv(variable_table_name):
+    temp_csv = home_dir + "/PycharmProjects/crystal/crystal/static/temp.csv"
     conn = sqlite3.connect(main_data_dir + database_name)
     c = conn.cursor()
 

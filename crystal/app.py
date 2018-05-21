@@ -132,8 +132,8 @@ def get_variables():
 def get_graph_csv():
     if request.method == "POST":
         selected_variable_table = request.form["selected_variable_table"]
-        filename = utils.generate_graph_sv(selected_variable_table)
-        return send_file("temp.csv", as_attachment=True)
+        filename = utils.generate_graph_csv(selected_variable_table)
+        return send_file(filename, as_attachment=True, attachment_filename='{}.csv'.format(selected_variable_table))
 
 
 if __name__ == '__main__':

@@ -117,13 +117,20 @@ var vue = new Vue({
             for (var variable in this.current_variables) {
                 current_value = this.current_variables[variable];
                 var layout = {
-                    title: '',
-                    showlegend: false
+                    showlegend: true,
+                    autosize: true,
+                    margin: {
+                        b: 30,
+                        t: 20,
+                        l: 50,
+                        r: 50,
+                    },
                 };
                 var trace = [{
+                    name: current_value,
                     x: [],
                     y: [],
-                    type: 'scatter'
+                    type: 'scatter',
                 }];
                 Plotly.newPlot(current_value, trace, layout, {displayModeBar: false});
                 console.log("Running plots!");
@@ -181,7 +188,19 @@ var vue = new Vue({
             rq.onreadystatechange = function(vm) {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
-                        vm.current_graph_raw_values = JSON.parse(this.responseText);
+                        // vm.current_graph_raw_values = JSON.parse(this.responseText);
+                        var blob = new Blob([this.responseText]);
+                        if (window.navigator.msSaveOrOpenBlob)  // IE hack; see http://msdn.microsoft.com/en-us/library/ie/hh779016.aspx
+                            window.navigator.msSaveBlob(blob, vm.current_run+"_"+id+".csv");
+                        else
+                        {
+                            var a = window.document.createElement("a");
+                            a.href = window.URL.createObjectURL(blob, {type: "text/plain"});
+                            a.download = vm.current_run+"_"+id+".csv";
+                            document.body.appendChild(a);
+                            a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
+                            document.body.removeChild(a);
+                        }
                     } else {
                         vm.current_graph_raw_values = " ";
                     }
@@ -199,13 +218,11 @@ var vue = new Vue({
         if (this.run_plots_init === true) {
             console.log("Run plots init is set to true");
             plots_shown = this.show_plots();
-
             if (plots_shown) {
                 this.run_plots_init = false;
             }
         }
     }
-
 
 });
 

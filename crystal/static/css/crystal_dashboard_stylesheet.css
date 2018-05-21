@@ -1,0 +1,70 @@
+.crystalCard {
+    border-radius: 1rem !important;
+    transition: all 0.3s ease-in-out;
+}
+
+.crystalCard:hover {
+    box-shadow: 0 .1rem 0.2rem rgba(0,0,0,.15)!important;
+}
+
+.crystalCardTitle {
+    text-align: center;
+    padding: .3rem;
+    margin-bottom: .5rem !important;
+}
+
+.crystalCardButton {
+  color: white;
+  text-align: center;
+  background: rgb(39, 99, 196);
+  width: max-content;
+  display: inline-block;
+  font-size: 1rem;
+  white-space: nowrap;
+  vertical-align: middle;
+  padding: .375rem .75rem;
+  border-radius: 5rem !important;
+  box-shadow: 0 0.3rem 1rem rgba(39, 99, 196,.55)!important;
+  transition: all 0.3s ease-in-out;
+}
+
+.crystalCardButton:hover {
+    box-shadow: 0 0 0.75rem rgba(39, 99, 196,.55)!important;
+    cursor: pointer;
+}
+
+.dashBoardContainer {
+    padding: 2rem 2rem 2rem 0;
+}
+
+.crystalMenuBar {
+    text-align: center;
+    background: white;
+    width: 5rem;
+    height: 35rem;
+    display: inline-block;
+    font-size: 1rem;
+    white-space: nowrap;
+    vertical-align: middle;
+    padding: .375rem .75rem;
+    border-radius: 0 1rem 1rem 0 !important;
+    box-shadow: 0 0.3rem 1.75rem rgba(0, 0, 0,.55)!important;
+    transition: all 0.3s ease-in-out;
+}
+
+.crystalMenuBar:hover {
+    box-shadow: 0 0 0.75rem rgba(0, 0, 0,.55)!important;
+}
+
+.crystalIconContainer {
+    padding: 2.6rem 0.5rem 2.6rem 0.5rem;
+
+}
+
+.crystalIcon {
+    width: 3rem;
+    height: 3rem;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 50%;
+}
