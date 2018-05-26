@@ -4,7 +4,8 @@
 
 <img src="https://raw.githubusercontent.com/Naresh1318/crystal/master/README/crystal_logo_cropped.png" alt="crystal logo" width=40%/>
 
-A realtime plotting and project management library built using Plotly.
+<p align="center"> A realtime plotting and project management library built using Plotly </p>
+ 
 </p>
 
 
