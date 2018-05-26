@@ -1,6 +1,12 @@
 # Crystal
 
+<p align=center>
+
+<img src="https://raw.githubusercontent.com/Naresh1318/crystal/master/README/crystal_logo_cropped.png" alt="crystal logo" width=2rem>
+
 A realtime plotting and project management library built using Plotly.
+</p>
+
 
 ## What can it do?
 
@@ -16,7 +22,7 @@ To get started you'll first have to install crystal using pip as follows:
 
 **Note:** 
 * Currently, only python 3 is supported.
- 
+
 
 Here's how you'd plot a sine wave in realtime:
 
