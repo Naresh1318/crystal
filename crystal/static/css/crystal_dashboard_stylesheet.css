@@ -38,27 +38,26 @@
 }
 
 .crystalMenuBar {
-    text-align: center;
-    background: white;
-    width: 5rem;
-    height: 35rem;
-    display: inline-block;
-    font-size: 1rem;
-    white-space: nowrap;
-    vertical-align: middle;
-    padding: .375rem .75rem;
-    border-radius: 0 1rem 1rem 0 !important;
-    box-shadow: 0 0.3rem 1.75rem rgba(0, 0, 0,.55)!important;
-    transition: all 0.3s ease-in-out;
+  text-align: center;
+  background: white;
+  width: 100px;
+  height: 500px;
+  display: inline-block;
+  font-size: 1rem;
+  white-space: nowrap;
+  vertical-align: middle;
+  padding: .375rem .75rem;
+  border-radius: 0 1rem 1rem 0 !important;
+  box-shadow: 0 0.05rem 0.4rem rgba(0, 0, 0,.4)!important;
+  transition: all 0.2s ease-in-out;
 }
 
 .crystalMenuBar:hover {
-    box-shadow: 0 0 0.75rem rgba(0, 0, 0,.55)!important;
+    box-shadow: 0 0.03rem 0.3rem rgba(0, 0, 0,.4)!important;
 }
 
 .crystalIconContainer {
     padding: 2.6rem 0.5rem 2.6rem 0.5rem;
-
 }
 
 .crystalIcon {
@@ -67,4 +66,98 @@
     margin-left: auto;
     margin-right: auto;
     border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Refresh icon */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css");
+
+/* Styles */
+
+.refresh-icon {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    border: none;
+    outline: none;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    width: 100px;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    -webkit-transition: 0.2s background;
+    transition: 0.2s background;
+}
+.refresh-icon:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+.refresh-icon:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+.refresh-icon svg path {
+    stroke: #000;
+    stroke-width: 5px;
+    stroke-linecap: round;
+    fill: none;
+}
+.refresh-icon svg.arrow-svg {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    -webkit-transform: rotate(-40deg);
+    transform: rotate(-40deg);
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+}
+
+.arrow-animation {
+    -webkit-animation-name: rotation;
+    animation-name: rotation;
+    -webkit-animation-duration: 0.8s;
+    animation-duration: 0.8s;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+@-webkit-keyframes rotation {
+    from {
+        -webkit-transform: rotate(-40deg);
+        transform: rotate(-40deg);
+    }
+    80% {
+        -webkit-transform: rotate(340deg);
+        transform: rotate(340deg);
+    }
+    99.999% {
+        -webkit-transform: rotate(460deg);
+        transform: rotate(460deg);
+    }
+    to {
+        -webkit-transform: rotate(-40deg);
+        transform: rotate(-40deg);
+    }
+}
+
+@keyframes rotation {
+    from {
+        -webkit-transform: rotate(-40deg);
+        transform: rotate(-40deg);
+    }
+    80% {
+        -webkit-transform: rotate(340deg);
+        transform: rotate(340deg);
+    }
+    99.999% {
+        -webkit-transform: rotate(460deg);
+        transform: rotate(460deg);
+    }
+    to {
+        -webkit-transform: rotate(-40deg);
+        transform: rotate(-40deg);
+    }
 }

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-crystal app.py
+    crystal.app
+    ~~~~~~~~~~~~~~
 
-A multipurpose real-time plotting library.
+    A multipurpose real-time plotting library.
 
 """
 
@@ -34,9 +35,9 @@ app = CustomFlask(__name__)  # This replaces your existing "app = Flask(__name__
 @app.route('/')
 def index():
     """
-    Renders the dashboard when the server is initially run.
-    Points to the latest run under the latest project by default.
-    :return: Object that is taken care by flask.
+    Renders the dashboard when the server is initially run. The rendered HTML allows the user to select a project
+    and the desired run.
+    :return: Template to render, Object that is taken care by flask.
     """
     # Reset current index values
     print(current_index)
@@ -96,44 +97,80 @@ def update():
 
 @app.route('/get_projects')
 def get_projects():
-    projects = utils.get_projects()
-    return jsonify(projects)
+    """
+    Send a dictionary of projects that are available on the database.
+    This function is usually called to get and display the list of projects available in the database for the user
+    to view.
+    :return: JSON, {<int_keys>: <project_name>}
+    """
+    try:
+        projects = utils.get_projects()
+
+        return jsonify(projects)
+    except Exception as e:
+        print("{}".format(e))
 
 
 @app.route('/get_runs', methods=['POST', 'GET'])
 def get_runs():
+    """
+    Send a dictionary of runs associated with the selected project.
+    This function is usually called to get and display the list of runs associated with a selected project available
+    in the database for the user to view.
+    :return: JSON, {<int_keys>: <run_name>}
+    """
+    assert request.method == "POST", "POST request expected received {}".format(request.method)
     if request.method == "POST":
-        selected_project = request.form["selected_project"]
-        runs = utils.get_runs(selected_project)
-        return jsonify(runs)
-    # TODO: Add catches
+        try:
+            selected_project = request.form["selected_project"]
+            runs = utils.get_runs(selected_project)
+
+            return jsonify(runs)
+        except Exception as e:
+            print("{}".format(e))
 
 
 @app.route('/get_variables', methods=['POST', 'GET'])
 def get_variables():
+    """
+    Send a dictionary of variables associated with the selected run.
+    This function is usually called to get and display the list of runs associated with a selected project available
+    in the database for the user to view.
+    :return: JSON, {<int_keys>: <run_name>}
+    """
+    assert request.method == "POST", "POST request expected received {}".format(request.method)
     if request.method == "POST":
-        selected_run = request.form["selected_run"]
-        variables = utils.get_variables(selected_run)
+        try:
+            selected_run = request.form["selected_run"]
+            variables = utils.get_variables(selected_run)
 
-        # Reset current_index when you select a new run
-        variable_names = variables.items()
+            # Reset current_index when you select a new run
+            variable_names = variables.items()
+            global current_index
+            current_index = {}
+            if len(current_index) < 1:
+                for _, v_n in variable_names:
+                    current_index["{}".format(v_n)] = 0
 
-        global current_index
-        current_index = {}
-
-        if len(current_index) < 1:
-            for _, v_n in variable_names:
-                current_index["{}".format(v_n)] = 0
-
-        return jsonify(variables)
+            return jsonify(variables)
+        except Exception as e:
+            print("{}".format(e))
 
 
 @app.route('/get_graph_csv', methods=['POST', 'GET'])
 def get_graph_csv():
+    """
+    Allows the user to download a graph's data as a CSV file.
+    :return: show a dialog box that allows the user to download the CSV file.
+    """
+    assert request.method == "POST", "POST request expected received {}".format(request.method)
     if request.method == "POST":
-        selected_variable_table = request.form["selected_variable_table"]
-        filename = utils.generate_graph_csv(selected_variable_table)
-        return send_file(filename, as_attachment=True, attachment_filename='{}.csv'.format(selected_variable_table))
+        try:
+            selected_variable_table = request.form["selected_variable_table"]
+            filename = utils.generate_graph_csv(selected_variable_table)
+            return send_file(filename, as_attachment=True, attachment_filename='{}.csv'.format(selected_variable_table))
+        except Exception as e:
+            print("{}".format(e))
 
 
 if __name__ == '__main__':

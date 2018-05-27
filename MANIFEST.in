@@ -1,2 +1,2 @@
-recursive-include crystal/templates *
-recursive-include crystal/static *
+recursive-include crystal/templates/
+recursive-include crystal/static/

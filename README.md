@@ -15,11 +15,28 @@ Crystal is an alternative to the amazingly useful visualization tool
 [Tensorboard](https://github.com/tensorflow/tensorboard) with some additional features that 
 make it useful not just for Machine Learning but, in any project that needs realtime data 
 visualizations. You can include realtime plots in your python (more languages to come) easily 
-with jsut two line of code.
+with just two line of code.
 
 To get started you'll first have to install crystal using pip as follows:
 
 `pip install crystal`
+
+If you want to run the crystal dashboard from any directory, then you will need to add `~/crystal_data/bin/`
+to you .bashrc file:
+
+```bash
+vim ~/.bashrc
+```
+
+Add the bin folder in `~/Crystal_data/bin/` in the .bashrc file:
+Paste the following at the end of the file.
+
+`export PATH=$PATH:~/Crystal_data/bin/`
+
+Now, source the changes by running:
+
+`source ~/.bashrc`
+
 
 **Note:** 
 * Currently, only python 3 is supported.
@@ -36,15 +53,40 @@ import time
 import numpy as np
 from crystal import Crystal
 
-cr = Crystal(project_name="Realtime sine")
+cr = Crystal(project_name="Realtime_sine")
+x_range = np.arange(0, 1000, 0.1)
 
-for i in range(1000):
-    cr.scalar(value=np.sin(2*np.pi*i), step=i, name="This is a sine wave")
+for i in x_range:
+    value = np.sin(2*np.pi*i)
+    cr.scalar(value=value, step=i, name="sine_wave")
+    print("step: {} \t value: {}".format(i, value))
     time.sleep(1)  # one value a second
 
 ```
 
 **Output:**
+
+Running crystal from the terminal  
+(**Ensure that the virtual environment containing crystal has been loaded**):
+
+```bash
+crystal 
+```
+
+If you don't mind running it manually then:
+
+In the environment contaning crytal installation run:
+
+```bash
+python
+```
+
+In the python interpreter, run:
+```python
+from crystal import app
+app.app.run()
+```
+
 
 ## Insert image here:
 

@@ -89,6 +89,7 @@ class Crystal:
         :param step: int or float, the value on the x-axis
         :param name: String, the name of the variable to be used during visualization
         """
+        assert len(name.split(" ")) < 2, "Ensure that you don't have spaces in your variable name, use '_' instead."
         self.previous.append(name)
         if self.previous[-1] not in self.previous[:-1]:
             self.c.execute("""INSERT INTO {time_stamp_table} (

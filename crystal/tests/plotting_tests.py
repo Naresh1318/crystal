@@ -1,15 +1,16 @@
-import crystal
-import numpy as np
+"""
+realtime_sinewave.py
+"""
+
 import time
+import numpy as np
+from crystal import Crystal
 
-# Testing Crystal.py
-cr = crystal.Crystal()
-a = np.arange(0, 10000, 0.1)
+cr = Crystal(project_name="Realtime_sine")
+x_range = np.arange(0, 1000, 0.1)
 
-for i in a:
-    cr.scalar(i**2, i, "pow")
-    cr.scalar(np.cos(2*np.pi*i), i, "sin")
-    print(i)
-    time.sleep(2)
-
-print("Done!")
+for i in x_range:
+    value = np.sin(2*np.pi*i)
+    cr.scalar(value=value, step=i, name="sine_wave")
+    print("step: {} \t value: {}".format(i, value))
+    time.sleep(1)  # one value a second
