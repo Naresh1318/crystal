@@ -17,12 +17,17 @@
         <!-- Awesome font -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+        <!-- Animation CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
+
         <title>Crystal</title>
     </head>
 
     <body>
+    <div id="vue-dashboard">
+        <!-- use the modal component, pass in the prop -->
+        <modal v-if="showModal" @close="showModal = false"></modal>
 
-    <div id="vue-app">
         <div class="row mt-3 mr-3">
             <div class="col-lg-9">
                 <h3 class="container">Crystal</h3>
@@ -30,7 +35,7 @@
             <div class="col-lg-3">
                 <div class="row">
                     <div class="col-lg-5">
-                        <button class="btn btn-secondary" v-on:click="set_refresh()">
+                        <button class="btn btn-secondary" v-on:click="toggle_refresh()">
                             {{refresh_button_text}}
                         </button>
                     </div>
@@ -41,10 +46,16 @@
                             </i>
                         </button>
                     </div>
-                    <div class="col">
-                        <input type="text" class="form-control" id="exampleInputName2" v-on:keyup.enter="set_refresh_interval()" v-model="entered_refresh_time" placeholder="time in s">
-                    </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="row m-2">
+            <div class="col-lg-3">
+                <h4>Project: {{current_project}} </h4>
+            </div>
+            <div class="col">
+                <h4>Run: {{current_run}} </h4>
             </div>
         </div>
 
@@ -87,27 +98,64 @@
                 <div class="col-lg-1">
                     <div class="crystalMenuBar">
 
-                        <div class="row crystalIconContainer">
-                            <img src="../static/icons/plots_icon.png" alt="show plots" class="crystalIcon rounded-circle">
+                        <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('dashboard')" @mouseleave="hide_mouse_over('dashboard')">
+                            <div class="col">
+                                <div class="row">
+                                    <div v-on:click="show_dashboard_window()" class="crystalIcon rounded-circle">
+                                        <i class="material-icons" style="font-size: 3rem;">dashboard</i>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="dashboard_text" class="text-center" style="margin-left: 0.5rem"></div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="row crystalIconContainer">
-                            <img src="../static/icons/plots_icon.png" alt="show plots" class="crystalIcon rounded-circle">
+                        <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('plots')" @mouseleave="hide_mouse_over('plots')">
+                            <div class="col">
+                                <div class="row">
+                                    <div v-on:click="show_plots_window()" class="crystalIcon rounded-circle">
+                                        <i class="material-icons" style="font-size: 3rem;">waves</i>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="plots_text" class="text-center" style="margin-left: 1.6rem"></div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="row crystalIconContainer">
-                            <img src="../static/icons/plots_icon.png" alt="show plots" class="crystalIcon rounded-circle">
+                        <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('images')" @mouseleave="hide_mouse_over('images')">
+                            <div class="col">
+                                <div class="row">
+                                    <div v-on:click="show_images_window()" class="crystalIcon rounded-circle">
+                                        <i class="material-icons" style="font-size: 3rem;">filter_hdr</i>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="images_text" class="text-center" style="margin-left: 1.2rem"></div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="row crystalIconContainer">
-                            <img src="../static/icons/plots_icon.png" alt="show plots" class="crystalIcon rounded-circle">
+                        <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('manage')" @mouseleave="hide_mouse_over('manage')">
+                            <div class="col">
+                                <div class="row">
+                                    <div id="show-modal" @click="showModal = true" class="crystalIcon rounded-circle">
+                                        <i class="material-icons" style="font-size: 3rem;">ballot</i>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="manage_text" class="text-center" style="margin-left: 1.1rem"></div>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
                 </div>
+
                 <div class="col-lg-11">
-                    <div class="row">
-                        <div class="col" v-for="value in current_variables">
+                    <div v-if="current_window === 'plots'" class="row">
+                        <div class="col-lg-6" v-for="value in current_variables">
                             <div class="shadow p-1 mb-5 bg-white card crystalCard">
                                 <h5 class="card-title crystalCardTitle"> {{value}} </h5>
                                 <div class="card-img" v-bind:id="value" style="width: auto"></div>
@@ -130,10 +178,50 @@
                             </div>
                         </div>
                     </div>
+
+                    <div v-if="current_window === 'images'" class="row">
+                        <h1>You are now in the plots window</h1>
+                    </div>
+
                 </div>
             </div>
         </div>
-        <!-- End of dashboard cards -->
+    </div>
+    <!-- End of dashboard cards -->
+
+    <!-- template for the modal component -->
+    <div id="vue-manage">
+        <script type="text/x-template" id="modal-template">
+            <transition name="modal">
+                <div class="modal-mask">
+                    <div class="modal-wrapper">
+                        <div class="modal-container">
+
+                            <div class="modal-header">
+                                <slot name="header">
+                                    {{title}}
+                                </slot>
+                            </div>
+
+                            <div class="modal-body">
+                                <slot name="body">
+                                    default body
+                                </slot>
+                            </div>
+
+                            <div class="modal-footer">
+                                <slot name="footer">
+                                    <input type="text" class="form-control" v-on:keyup.enter="set_refresh_interval()" v-model="entered_refresh_time" placeholder="time in s"/>
+                                    <button class="modal-default-button" @click="$emit('close')">
+                                        OK
+                                    </button>
+                                </slot>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </script>
     </div>
     <br/>
 

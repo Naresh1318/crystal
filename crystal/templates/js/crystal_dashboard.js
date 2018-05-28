@@ -1,19 +1,22 @@
 
-let vue = new Vue({
-    el: '#vue-app',
+
+
+let vue_dashboard = new Vue({
+    el: '#vue-dashboard',
     data: {
         current_project: "",                     // Selected project
         current_run: "",                         // Selected run
         current_variables: {},                   // Object that will contain the variables to be shown
+        current_window: "plots",                 // Which window is the user currently in -> plots, images,
         all_projects: {},                        // Must be an empty Object to show nothing on the DOM
         all_runs: {},                            // Must be an empty Object to show nothing on the DOM
-        entered_refresh_time: "",                // Used for two way data binding
         refresh_time: 5000,                      // Default refresh interval in ms
         refreshing: false,                       // Set to false as initially refreshing is done when the plots are shown
         refresh_button_text: 'Start Refreshing', // Refresh button text
         timer: '',                               // timer instance that will be used later
         run_plots_init: false,                   // Ensures that plots are shown only when the DOM has been updated
                                                  // with the required ids that are used by plotly
+        showModal: false,
     },
     methods: {
         refresh: function () {
@@ -94,8 +97,6 @@ let vue = new Vue({
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
                         vm.current_variables = JSON.parse(this.responseText);
-
-                        //
                         this.run_plots_init = true;
                     } else {
                         vm.current_variables = {};
@@ -186,18 +187,6 @@ let vue = new Vue({
             this.refreshing = !this.refreshing;
             console.log("Refresh toggled");
         },
-        set_refresh_interval: function () {
-            /*
-            Change the refresh interval to the desired value.
-            This function uses two way data binding to transfer the entered value.
-             */
-            this.refresh_time = parseInt(this.entered_refresh_time) * 1000;  // time needed in ms
-            clearInterval(this.timer);
-            this.timer = setInterval(function () {
-                refresh();
-            }, this.refresh_time);
-            console.log("Refresh_interval set to " + this.refresh_time);
-        },
         download_graph: function (id) {
             /*
             Call the appropriate plotly function to download the graph.
@@ -234,6 +223,28 @@ let vue = new Vue({
             rq.open("POST", "/get_graph_csv", true);
             rq.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
             rq.send("selected_variable_table="+this.current_run+"_"+id);
+        },
+        show_images_window: function () {
+            console.log("show_images_window");
+            // Stop refreshing, not using toggle as it messes with the timer and does not stop it.
+            clearInterval(this.timer);
+            this.refresh_button_text = "Start Refreshing";
+            console.log("Refreshing for plots stopped.");
+            // Change DOM
+            this.current_window = "images";
+        },
+        show_plots_window: function () {
+            console.log("show_plots_window");
+            this.current_window = "plots";
+            // Completely refresh by asking the variable values again from the server
+            this.get_variables();
+            this.run_plots_init = true;
+        },
+        show_mouse_over: function (text) {
+            document.getElementById(text+"_text").innerHTML = text;
+        },
+        hide_mouse_over: function (text) {
+            document.getElementById(text+"_text").innerHTML = "";
         }
     },
     
@@ -254,5 +265,31 @@ let vue = new Vue({
 
 
 function refresh() {
-    vue.refresh();
+    vue_dashboard.refresh();
 }
+
+// register modal component
+Vue.component('modal', {
+    template: '#modal-template',
+    data: function() {
+        return {
+            entered_refresh_time: "",                // Used for two way data binding
+            title: "Naresh",
+        }
+    },
+    methods: {
+        set_refresh_interval: function () {
+            /*
+            Change the refresh interval to the desired value.
+            This function uses two way data binding to transfer the entered value.
+             */
+            vue_dashboard.refresh_time = parseInt(this.entered_refresh_time) * 1000;  // time needed in ms
+            clearInterval(vue_dashboard.timer);
+            vue_dashboard.timer = setInterval(function () {
+                refresh();
+            }, vue_dashboard.refresh_time);
+            console.log("Refresh_interval set to " + vue_dashboard.refresh_time);
+        },
+    }
+});
+

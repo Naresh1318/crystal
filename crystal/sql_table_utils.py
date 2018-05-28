@@ -35,10 +35,13 @@ def drop_run(project_name, run_name, conn):
     c = conn.cursor()
     # delete all the variable tables first
     c.execute("SELECT variable_name FROM {}".format(run_name))
-    all_variables = np.array(c.fetchall()).squeeze(axis=1)
-    for i in all_variables:
-        variable_table_name = run_name + '_' + i
-        c.execute("""DROP TABLE IF EXISTS {}""".format(variable_table_name))
+    try:
+        all_variables = np.array(c.fetchall()).squeeze(axis=1)
+        for i in all_variables:
+            variable_table_name = run_name + '_' + i
+            c.execute("""DROP TABLE IF EXISTS {}""".format(variable_table_name))
+    except np.core._internal.AxisError:
+        print("Did not find any values, so deleting run table directly.")
 
     c.execute("""DROP TABLE IF EXISTS {}""".format(run_name))
     c.execute("""DELETE FROM {} WHERE run_name='{}'""".format(project_name+'_run_table', run_name))
@@ -221,3 +224,6 @@ def convert_list_to_dict(input_list):
     :return: dict -> {<int_keys>: <list_elements>}
     """
     return {k: v for k, v in enumerate(input_list)}
+
+# conn, c = open_data_base_connection()
+# drop_project("Realtime_sine", conn)

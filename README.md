@@ -19,7 +19,9 @@ with just two line of code.
 
 To get started you'll first have to install crystal using pip as follows:
 
-`pip install crystal`
+``` bash
+pip install crystal
+```
 
 If you want to run the crystal dashboard from any directory, then you will need to add `~/crystal_data/bin/`
 to you .bashrc file:
@@ -89,6 +91,8 @@ app.app.run()
 
 
 ## Insert image here:
+
+
 
 
 ### Docs coming soon!
