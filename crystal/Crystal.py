@@ -44,6 +44,11 @@ class Crystal:
         if not os.path.exists(main_data_dir):
             print("Crystal_data directory not found. Making a new one now.")
             os.mkdir(main_data_dir)
+            # Create /bin for crystal dashboard script
+            os.mkdir(os.path.join(main_data_dir, "bin"))
+            with open(os.path.join(os.path.join(main_data_dir, "bin"), "crystal"), "w") as bash_file:
+                bash_file.write("#!/bin/bash \n")
+                bash_file.write("""python -c 'from crystal import app; app.app.run(); print("Running server!")'""")
 
         # Create new project and run tables if not already found
         self.conn = sqlite3.connect(main_data_dir + database_name)

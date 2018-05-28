@@ -26,6 +26,13 @@ pip install crystal
 If you want to run the crystal dashboard from any directory, then you will need to add `~/crystal_data/bin/`
 to you .bashrc file:
 
+Make the bash file under: `~/Crystal_data/bin/crystal` executable:
+Run the following from the folder containing crystal bash script.
+
+```bash
+chmod +x crystal
+```
+
 ```bash
 vim ~/.bashrc
 ```
