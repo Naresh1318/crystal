@@ -25,6 +25,7 @@
 
     <body>
     <div id="vue-dashboard">
+
         <!-- use the modal component, pass in the prop -->
         <modal v-if="showModal" @close="showModal = false"></modal>
 
@@ -189,14 +190,13 @@
     </div>
     <!-- End of dashboard cards -->
 
-    <!-- template for the modal component -->
+    <!-- Project management -->
     <div id="vue-manage">
-        <script type="text/x-template" id="modal-template">
+        <script id="modal-template" type="text/x-template">
             <transition name="modal">
-                <div class="modal-mask">
+                <div class="modal-mask" @click="close_project_management">
                     <div class="modal-wrapper">
                         <div class="modal-container">
-
                             <div class="modal-header">
                                 <slot name="header">
                                     {{title}}

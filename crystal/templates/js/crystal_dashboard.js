@@ -1,6 +1,4 @@
 
-
-
 let vue_dashboard = new Vue({
     el: '#vue-dashboard',
     data: {
@@ -161,7 +159,7 @@ let vue_dashboard = new Vue({
              */
 
             // Check if this is the init run
-            if (this.run_plots_init === true){
+            if (this.run_plots_init === true) {
                 console.log("Initial Run");
                 clearInterval(this.timer);
                 this.refresh_button_text = "Stop Refreshing";
@@ -274,7 +272,7 @@ Vue.component('modal', {
     data: function() {
         return {
             entered_refresh_time: "",                // Used for two way data binding
-            title: "Naresh",
+            title: "Project management",
         }
     },
     methods: {
@@ -290,6 +288,11 @@ Vue.component('modal', {
             }, vue_dashboard.refresh_time);
             console.log("Refresh_interval set to " + vue_dashboard.refresh_time);
         },
+        close_project_management: function (event) {
+            if (event.target.className === "modal-wrapper") {
+                this.$emit('close');
+            }
+        }
     }
 });
 

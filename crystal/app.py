@@ -104,8 +104,7 @@ def update():
 def get_projects():
     """
     Send a dictionary of projects that are available on the database.
-    This function is usually called to get and display the list of projects available in the database for the user
-    to view.
+    This function is usually called to get and display the list of projects available in the database.
     :return: JSON, {<int_keys>: <project_name>}
     """
     try:
@@ -121,7 +120,7 @@ def get_runs():
     """
     Send a dictionary of runs associated with the selected project.
     This function is usually called to get and display the list of runs associated with a selected project available
-    in the database for the user to view.
+    in the database.
     :return: JSON, {<int_keys>: <run_name>}
     """
     assert request.method == "POST", "POST request expected received {}".format(request.method)
