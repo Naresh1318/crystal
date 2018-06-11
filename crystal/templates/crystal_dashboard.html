@@ -210,9 +210,10 @@
                                         {{project}}
                                         <div v-for="(runs, project_key) in all_runs">
                                             <div v-if="project_key == project">
-                                                <button class="card" v-for="run in runs">
+                                                <button class="card" v-for="run in runs" @click="delete_run(project, run)">
                                                     {{run}}
                                                 </button>
+
                                             </div>
                                         </div>
 

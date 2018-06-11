@@ -29,14 +29,13 @@ def open_data_base_connection():
     return conn, c
 
 
-def drop_run(project_name, run_name, conn):
+def drop_run(project_name, run_name):
     """
     Deletes a run from a desired project. If this causes the run_table to be empty then the entire project gets deleted
     :param project_name: String, project which contains the desire run_name
     :param run_name: String, run to delete
-    :param conn: No Idea, connection opened to an SQL database
     """
-    c = conn.cursor()
+    conn, c = open_data_base_connection()
     # delete all the variable tables first
     c.execute("SELECT variable_name FROM {}".format(run_name))
     try:
@@ -61,13 +60,12 @@ def drop_run(project_name, run_name, conn):
     print("{} table deleted".format(run_name))
 
 
-def drop_project(project_name, conn):
+def drop_project(project_name):
     """
     Deletes all the tables associated with a project and removes it from the main_table
     :param project_name: String, project to delete
-    :param conn: No Idea, connection opened to an SQL database
     """
-    c = conn.cursor()
+    conn, c = open_data_base_connection()
     # Need to delete all the run_tables before removing the project_table and the entry from the main_table
     run_table_name = project_name + '_run_table'
 

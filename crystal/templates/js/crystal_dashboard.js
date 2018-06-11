@@ -78,6 +78,22 @@ modal = Vue.extend({
             rq.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
             rq.send("selected_project="+project);
         },
+        delete_run: function (project, run) {
+            // Request all runs
+            let selections = {"project": project, "run": run};
+            let rq = new XMLHttpRequest();
+            rq.onreadystatechange = function(vm) {
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    if (this.status === 200) {
+                        delete vm.all_runs[project][run];
+                        vm.$forceUpdate();
+                    }
+                }
+            }.bind(rq, this);
+            rq.open("POST", "/delete_run", true);
+            rq.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+            rq.send("selections="+JSON.stringify(selections));
+        }
 
     },
     mounted() {

@@ -16,7 +16,7 @@ import os
 import sqlite3
 import numpy as np
 import crystal.sql_table_utils as utils
-from flask import Flask, render_template, jsonify, request, send_file
+from flask import Flask, render_template, jsonify, request, send_file, json
 
 # Get main dataset directory
 home_dir = os.path.expanduser("~")
@@ -173,6 +173,21 @@ def get_graph_csv():
             selected_variable_table = request.form["selected_variable_table"]
             filename = utils.generate_graph_csv(selected_variable_table)
             return send_file(filename, as_attachment=True, attachment_filename='{}.csv'.format(selected_variable_table))
+        except Exception as e:
+            print("{}".format(e))
+
+
+@app.route('/delete_run', methods=['GET', 'POST'])
+def delete_run():
+    """
+    Delete the selected run from the database.
+    :return:
+    """
+    if request.method == "POST":
+        try:
+            selections = json.loads(request.form["selections"])
+            utils.drop_run(selections["project"], selections["run"])
+            return jsonify({"response": "deleted {}".format(selections["run"])})
         except Exception as e:
             print("{}".format(e))
 
