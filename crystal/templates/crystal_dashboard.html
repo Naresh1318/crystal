@@ -138,10 +138,11 @@
                             </div>
                         </div>
 
+                        <!-- Project Management Button -->
                         <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('manage')" @mouseleave="hide_mouse_over('manage')">
                             <div class="col">
                                 <div class="row">
-                                    <div id="show-modal" @click="showModal = true" class="crystalIcon rounded-circle">
+                                    <div id="show-modal" @click="show_project_management()" class="crystalIcon rounded-circle">
                                         <i class="material-icons" style="font-size: 3rem;">ballot</i>
                                     </div>
                                 </div>
@@ -205,7 +206,17 @@
 
                             <div class="modal-body">
                                 <slot name="body">
-                                    default body
+                                    <button class="card" v-for="project in all_projects" @click="get_runs(project)">
+                                        {{project}}
+                                        <div v-for="(runs, project_key) in all_runs">
+                                            <div v-if="project_key == project">
+                                                <button class="card" v-for="run in runs">
+                                                    {{run}}
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </button>
                                 </slot>
                             </div>
 

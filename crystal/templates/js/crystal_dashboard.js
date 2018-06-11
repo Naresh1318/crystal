@@ -1,4 +1,91 @@
 
+// register modal component
+modal = Vue.extend({
+    template: '#modal-template',
+    data: function() {
+        return {
+            entered_refresh_time: "",                // Used for two way data binding
+            title: "Project management",
+            all_projects: {},
+            all_runs: {},
+        }
+    },
+    methods: {
+        set_refresh_interval: function () {
+            /*
+            Change the refresh interval to the desired value.
+            This function uses two way data binding to transfer the entered value.
+             */
+            vue_dashboard.refresh_time = parseInt(this.entered_refresh_time) * 1000;  // time needed in ms
+            clearInterval(vue_dashboard.timer);
+            vue_dashboard.timer = setInterval(function () {
+                refresh();
+            }, vue_dashboard.refresh_time);
+            console.log("Refresh_interval set to " + vue_dashboard.refresh_time);
+        },
+        show_project_management: function () {
+
+            // Request all the projects
+            let rq = new XMLHttpRequest();
+            rq.onreadystatechange = function(vm) {
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    if (this.status === 200) {
+                        vm.all_projects = JSON.parse(this.responseText);
+                        for (key in vm.all_projects) {
+                            vm.all_runs[vm.all_projects[key]] = {};
+                        }
+                    } else {
+                        vm.all_projects = {};
+                    }
+                }
+            }.bind(rq, this);
+            rq.open("GET", "/get_projects");
+            rq.send();
+        },
+        close_project_management: function (event) {
+            if (event.target.className === "modal-wrapper") {
+                this.showModal = false;
+                this.$emit('close');
+            }
+        },
+        get_runs: function(project) {
+            /*
+            Use an Async request to get JSON file containing runs available for a selected project.
+            Upon receiving a response, sets the all_runs variable with the received JSON object.
+            As soon this variable changes Vue updates the DOM to show them on the dropdown menu.
+             */
+            // Check if runs are already requested and close
+            if (Object.keys(this.all_runs[project]).length !== 0) {
+                this.all_runs[project] = {};
+                this.$forceUpdate();
+                return;
+            }
+
+            // Request all runs
+            let rq = new XMLHttpRequest();
+            rq.onreadystatechange = function(vm) {
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    if (this.status === 200) {
+                        vm.all_runs[project] = JSON.parse(this.responseText);
+                        console.log(vm.all_runs);
+                        vm.$forceUpdate();
+                    } else {
+                        vm.all_runs[project] = {};
+                    }
+                }
+            }.bind(rq, this);
+            rq.open("POST", "/get_runs", true);
+            rq.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+            rq.send("selected_project="+project);
+        },
+
+    },
+    mounted() {
+        this.show_project_management();
+    },
+});
+
+
 let vue_dashboard = new Vue({
     el: '#vue-dashboard',
     data: {
@@ -15,6 +102,9 @@ let vue_dashboard = new Vue({
         run_plots_init: false,                   // Ensures that plots are shown only when the DOM has been updated
                                                  // with the required ids that are used by plotly
         showModal: false,
+    },
+    components: {
+      "modal": modal,
     },
     methods: {
         refresh: function () {
@@ -243,6 +333,9 @@ let vue_dashboard = new Vue({
         },
         hide_mouse_over: function (text) {
             document.getElementById(text+"_text").innerHTML = "";
+        },
+        show_project_management: function () {
+            this.showModal = true;  // Display project management modal
         }
     },
     
@@ -266,33 +359,5 @@ function refresh() {
     vue_dashboard.refresh();
 }
 
-// register modal component
-Vue.component('modal', {
-    template: '#modal-template',
-    data: function() {
-        return {
-            entered_refresh_time: "",                // Used for two way data binding
-            title: "Project management",
-        }
-    },
-    methods: {
-        set_refresh_interval: function () {
-            /*
-            Change the refresh interval to the desired value.
-            This function uses two way data binding to transfer the entered value.
-             */
-            vue_dashboard.refresh_time = parseInt(this.entered_refresh_time) * 1000;  // time needed in ms
-            clearInterval(vue_dashboard.timer);
-            vue_dashboard.timer = setInterval(function () {
-                refresh();
-            }, vue_dashboard.refresh_time);
-            console.log("Refresh_interval set to " + vue_dashboard.refresh_time);
-        },
-        close_project_management: function (event) {
-            if (event.target.className === "modal-wrapper") {
-                this.$emit('close');
-            }
-        }
-    }
-});
+
 

@@ -100,7 +100,7 @@ def update():
         return jsonify(data)
 
 
-@app.route('/get_projects')
+@app.route('/get_projects', methods=['POST', 'GET'])
 def get_projects():
     """
     Send a dictionary of projects that are available on the database.
