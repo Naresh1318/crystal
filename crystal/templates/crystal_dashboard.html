@@ -4,6 +4,7 @@
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="icon" type="image/x-icon" href="../static/icons/Icon-1024_saturated.png"/>
 
         <!-- Bootstrap Material CSS -->
         <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
@@ -31,7 +32,30 @@
 
         <div class="row mt-3 mr-3">
             <div class="col-lg-10">
-                <h3 class="container">Crystal</h3>
+                <div class="row">
+                    <div class="col-lg-1">
+                        <img src="../static/icons/Icon-1024.ico" style="width: 100%">
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                <h3>Crystal</h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <h4>Project: {{current_project}} </h4>
+                                    </div>
+                                    <div class="col">
+                                        <h4>Run: {{current_run}} </h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-lg-2">
                 <div class="row">
@@ -51,14 +75,6 @@
             </div>
         </div>
 
-        <div class="row m-2">
-            <div class="col-lg-3">
-                <h4>Project: {{current_project}} </h4>
-            </div>
-            <div class="col">
-                <h4>Run: {{current_run}} </h4>
-            </div>
-        </div>
 
         <div class="row mt-3">
             <div class="col-lg-1"></div>
