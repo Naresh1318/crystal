@@ -24,23 +24,23 @@
     </head>
 
     <body>
-    <div id="vue-dashboard">
+    <div id="vue-dashboard" style="overflow-x: hidden">
 
         <!-- use the modal component, pass in the prop -->
         <modal v-if="showModal" @close="showModal = false"></modal>
 
         <div class="row mt-3 mr-3">
-            <div class="col-lg-9">
+            <div class="col-lg-10">
                 <h3 class="container">Crystal</h3>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                 <div class="row">
-                    <div class="col-lg-5">
+                    <div class="col">
                         <button class="btn btn-secondary" v-on:click="toggle_refresh()">
                             {{refresh_button_text}}
                         </button>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col">
                         <button class="btn btn-secondary" v-on:click="refresh()" class="btn btn-dark">
                             <i class="material-icons">
                                 refresh
@@ -62,7 +62,7 @@
 
         <div class="row mt-3">
             <div class="col-lg-1"></div>
-            <div class="col-lg-11">
+            <div class="col">
                 <div class="row">
                     <div class="col-lg-2">
                         <div class="dropdown">
@@ -163,7 +163,7 @@
                                 <div class="card-img" v-bind:id="value" style="width: auto"></div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-lg-2">
+                                        <div class="col">
                                             <button type="button" class="btn btn-raised btn-info" v-on:click="download_graph(value)">Download graph</button>
                                         </div>
                                         <div class="col" style="float: left; padding-left: 3rem">
@@ -174,23 +174,24 @@
                                                 <i class="material-icons">more_vert</i>
                                             </button>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div v-if="current_window === 'images'" class="row">
-                        <h1>You are now in the plots window</h1>
+                    <div class="row" v-if="current_window === 'images'">
+                        <div class="col">
+                            <h1>You are now in the plots window</h1>
+                            <p>This section is still being worked on!</p>
+                        </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
     <!-- End of dashboard cards -->
-
+i
     <!-- Project management -->
     <div id="vue-manage">
         <script id="modal-template" type="text/x-template">
@@ -206,18 +207,27 @@
 
                             <div class="modal-body">
                                 <slot name="body">
-                                    <button class="card" v-for="project in all_projects" @click="get_runs(project)">
-                                        {{project}}
-                                        <div v-for="(runs, project_key) in all_runs">
-                                            <div v-if="project_key == project">
-                                                <button class="card" v-for="run in runs" @click="delete_run(project, run)">
-                                                    {{run}}
-                                                </button>
-
+                                    <div class="m-2" v-for="project in all_projects" @click="get_runs(project)">
+                                        <div class="card row">
+                                            <div class="p-2">
+                                                <div class="col">
+                                                    <h3>
+                                                        {{project}}
+                                                    </h3>
+                                                </div>
                                             </div>
                                         </div>
 
-                                    </button>
+                                        <div v-for="(runs, project_key) in all_runs">
+                                            <div v-if="project_key == project">
+                                                <div class="card m-1" v-for="run in runs" @click="delete_run(project, run)">
+                                                    <div class="card-body">
+                                                        {{run}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </slot>
                             </div>
 

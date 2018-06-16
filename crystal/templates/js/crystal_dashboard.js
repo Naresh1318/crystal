@@ -374,6 +374,3 @@ let vue_dashboard = new Vue({
 function refresh() {
     vue_dashboard.refresh();
 }
-
-
-
