@@ -13,15 +13,25 @@ from __future__ import print_function
 
 
 import os
+import sys
 import sqlite3
+import logging
 import numpy as np
-import crystal.sql_table_utils as utils
 from flask import Flask, render_template, jsonify, request, send_file, json
 
-# Get main dataset directory
-home_dir = os.path.expanduser("~")
-main_data_dir = home_dir + "/Crystal_data"
-database_name = "/crystal.db"
+import crystal.sql_table_utils as utils
+
+
+# Setup logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    stream=sys.stderr,
+    format='%(levelname)s '
+           '%(asctime)s.%(msecs)06d: '
+           '%(filename)s: '
+           '%(lineno)d '
+           '%(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 current_index = {}  # Used to keep track of the index for plotting
 
@@ -40,30 +50,34 @@ app = CustomFlask(__name__)  # This replaces your existing "app = Flask(__name__
 @app.route('/')
 def index():
     """
-    Renders the dashboard when the server is initially run. The rendered HTML allows the user to select a project
-    and the desired run.
+    Renders the dashboard when the server is initially run.
+
+    Usage description:
+    The rendered HTML allows the user to select a project and the desired run.
+
     :return: Template to render, Object that is taken care by flask.
     """
-    # Reset current index values
-    print(current_index)
+    # Reset current index values when the page is refreshed
     for k, v in current_index.items():
         current_index[k] = 0
 
-    print("Current Index reset.")
+    logging.info("Dashboard refreshed")
 
     # render the template (below) that will use JavaScript to read the stream
     return render_template("crystal_dashboard.html")
 
 
-@app.route('/update', methods=['POST', 'GET'])
+@app.route('/update', methods=['POST'])
 def update():
     """
-    Called by the XMLHTTPrequest function periodically to get new graph data. This function queries the database and
-    returns all the newly added values.
+    Called by XMLHTTPrequest function periodically to get new graph data.
+
+    Usage description:
+    This function queries the database and returns all the newly added values.
+
     :return: JSON Object, passed on to the JS script.
     """
-    conn = sqlite3.connect(main_data_dir + database_name)
-    c = conn.cursor()
+    conn, c = utils.open_data_base_connection()
 
     if request.method == 'POST':
         # Get figure stats
@@ -76,10 +90,9 @@ def update():
 
         if len(current_index) < 1:
             for _, v_n in variable_names:
-                current_index["{}".format(v_n)] = 0
+                current_index[v_n] = 0
 
-        print("Update index:")
-        print(current_index)
+        logging.info("Current index: {}".format(current_index))
 
         try:
             # values for each variable
@@ -88,39 +101,49 @@ def update():
 
                 values = np.array(c.fetchall())
                 try:
-                    n_values = len(values[:, 0].tolist())
-                    data[v_n] = {'x': values[:, 0].tolist(), 'y': values[:, 1].tolist()}
+                    current_data = values[:, 0].tolist()
+                    n_values = len(current_data)
+                    data[v_n] = {'x': current_data, 'y': values[:, 1].tolist()}
                     current_index["{}".format(v_n)] += n_values
-                    print("New value found and updated")
+                    logging.info("New value found and updated")
                 except IndexError:
-                    print("No new data point found")
+                    logging.info("No new data point found")
         except KeyError:
-            print("I think the run variable has changes. So, I'm passing no data.")
+            logging.error("I think the run variable has changes. So, I'm passing no data.")
 
         return jsonify(data)
 
 
-@app.route('/get_projects', methods=['POST', 'GET'])
+@app.route('/get_projects', methods=['GET'])
 def get_projects():
     """
     Send a dictionary of projects that are available on the database.
+
+    Usage description:
     This function is usually called to get and display the list of projects available in the database.
+
     :return: JSON, {<int_keys>: <project_name>}
     """
+    assert request.method == "GET", "GET request expected received {}".format(request.method)
     try:
-        projects = utils.get_projects()
+        if request.method == 'GET':
+            projects = utils.get_projects()
 
-        return jsonify(projects)
+            return jsonify(projects)
     except Exception as e:
-        print("{}".format(e))
+        logging.error(e)
+    return
 
 
-@app.route('/get_runs', methods=['POST', 'GET'])
+@app.route('/get_runs', methods=['POST'])
 def get_runs():
     """
     Send a dictionary of runs associated with the selected project.
+
+    Usage description:
     This function is usually called to get and display the list of runs associated with a selected project available
     in the database.
+
     :return: JSON, {<int_keys>: <run_name>}
     """
     assert request.method == "POST", "POST request expected received {}".format(request.method)
@@ -131,15 +154,19 @@ def get_runs():
 
             return jsonify(runs)
         except Exception as e:
-            print("{}".format(e))
+            logging.error(e)
+    return
 
 
-@app.route('/get_variables', methods=['POST', 'GET'])
+@app.route('/get_variables', methods=['POST'])
 def get_variables():
     """
     Send a dictionary of variables associated with the selected run.
+
+    Usage description:
     This function is usually called to get and display the list of runs associated with a selected project available
     in the database for the user to view.
+
     :return: JSON, {<int_keys>: <run_name>}
     """
     assert request.method == "POST", "POST request expected received {}".format(request.method)
@@ -158,10 +185,11 @@ def get_variables():
 
             return jsonify(variables)
         except Exception as e:
-            print("{}".format(e))
+            logging.error(e)
+    return
 
 
-@app.route('/get_graph_csv', methods=['POST', 'GET'])
+@app.route('/get_graph_csv', methods=['POST'])
 def get_graph_csv():
     """
     Allows the user to download a graph's data as a CSV file.
@@ -174,7 +202,8 @@ def get_graph_csv():
             filename = utils.generate_graph_csv(selected_variable_table)
             return send_file(filename, as_attachment=True, attachment_filename='{}.csv'.format(selected_variable_table))
         except Exception as e:
-            print("{}".format(e))
+            logging.error(e)
+    return
 
 
 @app.route('/delete_run', methods=['GET', 'POST'])
@@ -183,13 +212,15 @@ def delete_run():
     Delete the selected run from the database.
     :return:
     """
+    assert request.method == "POST", "POST request expected received {}".format(request.method)
     if request.method == "POST":
         try:
             selections = json.loads(request.form["selections"])
             utils.drop_run(selections["project"], selections["run"])
             return jsonify({"response": "deleted {}".format(selections["run"])})
         except Exception as e:
-            print("{}".format(e))
+            logging.error(e)
+    return
 
 
 if __name__ == '__main__':

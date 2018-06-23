@@ -9,9 +9,10 @@ import numpy as np
 
 
 # Get main dataset directory
+database_name = "crystal.db"
 home_dir = os.path.expanduser("~")
-main_data_dir = home_dir + "/Crystal_data"
-database_name = "/crystal.db"
+main_data_dir = os.path.join(home_dir, "Crystal_data")
+database_dir = os.path.join(main_data_dir, database_name)
 
 # TODO: Close database connections in all functions
 
@@ -21,10 +22,10 @@ def open_data_base_connection():
     Creates a connections to the crystal database.
     :return: conn, c -> connection and cursor object
     """
-    assert os.path.isfile(main_data_dir + database_name), \
+    assert os.path.isfile(database_dir), \
         "Database file not found in {}. " \
-        "Please ensure that you have written data atleast once using the Crystal.".format(main_data_dir + database_name)
-    conn = sqlite3.connect(main_data_dir + database_name)
+        "Please ensure that you have written data atleast once.".format(database_dir)
+    conn = sqlite3.connect(database_dir)
     c = conn.cursor()
     return conn, c
 
@@ -226,6 +227,3 @@ def convert_list_to_dict(input_list):
     :return: dict -> {<int_keys>: <list_elements>}
     """
     return {k: v for k, v in enumerate(input_list)}
-
-# conn, c = open_data_base_connection()
-# drop_project("Realtime_sine", conn)
