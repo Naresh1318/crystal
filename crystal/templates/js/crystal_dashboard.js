@@ -5,6 +5,7 @@ modal = Vue.extend({
     data: function() {
         return {
             entered_refresh_time: "",                // Used for two way data binding
+            entered_smoothing_value: "",
             title: "Project management",
             all_projects: {},
             all_runs: {},
@@ -22,6 +23,15 @@ modal = Vue.extend({
                 refresh();
             }, vue_dashboard.refresh_time);
             console.log("Refresh_interval set to " + vue_dashboard.refresh_time);
+        },
+        set_smoothing_value: function () {
+            /*
+            Change the graph smoothing value to the desired value.
+            This function uses two way data binding to transfer the entered value.
+             */
+            vue_dashboard.smoothing_value = parseInt(this.entered_smoothing_value);
+            force();
+            console.log("smoothing_value set to " + vue_dashboard.smoothing_value);
         },
         show_project_management: function () {
 
@@ -118,6 +128,8 @@ let vue_dashboard = new Vue({
         run_plots_init: false,                   // Ensures that plots are shown only when the DOM has been updated
                                                  // with the required ids that are used by plotly
         showModal: false,
+        showInstructions: true,
+        smoothing_value: 1,
     },
     components: {
       "modal": modal,
@@ -241,6 +253,7 @@ let vue_dashboard = new Vue({
                     x: [],
                     y: [],
                     type: 'scatter',
+                    line: {shape: "spline", smoothing: this.smoothing_value}
                 }];
                 Plotly.newPlot(current_value, trace, layout, {displayModeBar: false});
                 console.log("Showing plots!");
@@ -361,6 +374,7 @@ let vue_dashboard = new Vue({
         Show plots only when the DOM is updated with the required ids.
          */
         if (this.run_plots_init === true) {
+            this.showInstructions = false;
             console.log("Run plots init is set to true");
             plots_shown = this.show_plots();
             if (plots_shown) {
@@ -374,3 +388,14 @@ let vue_dashboard = new Vue({
 function refresh() {
     vue_dashboard.refresh();
 }
+
+function force() {
+    vue_dashboard.set_run(vue_dashboard.current_run);
+}
+
+
+var slider = document.getElementById("entered_smoothing_value");
+
+slider.oninput = function() {
+    console.log(this.value);
+};

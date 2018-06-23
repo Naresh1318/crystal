@@ -39,6 +39,7 @@
 }
 
 .crystalMenuBar {
+    position: fixed;
     text-align: center;
     background: white;
     width: 100px;
@@ -136,4 +137,8 @@
 .modal-leave-active .modal-container {
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
+}
+
+.textContent {
+    font-family: 'Source Sans Pro', sans-serif;
 }

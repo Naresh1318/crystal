@@ -21,11 +21,17 @@
         <!-- Animation CSS -->
         <link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
 
+        <!-- JS Code Prettifier -->
+        <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+        <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+
         <title>Crystal</title>
     </head>
 
     <body>
-    <div id="vue-dashboard" style="overflow-x: hidden">
+    <div id="vue-dashboard" style="overflow-x: hidden" class="textContent">
 
         <!-- use the modal component, pass in the prop -->
         <modal v-if="showModal" @close="showModal = false"></modal>
@@ -79,7 +85,7 @@
         <div class="row mt-3">
             <div class="col-lg-1"></div>
             <div class="col">
-                <div class="row">
+                <div class="row test">
                     <div class="col-lg-2">
                         <div class="dropdown">
                             <button v-on:click="get_projects()" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -111,67 +117,102 @@
 
         <!-- Dashboard cards -->
         <div class="dashBoardContainer">
-            <div class="row">
-                <div class="col-lg-1">
-                    <div class="crystalMenuBar">
 
-                        <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('dashboard')" @mouseleave="hide_mouse_over('dashboard')">
-                            <div class="col">
-                                <div class="row">
-                                    <div v-on:click="show_dashboard_window()" class="crystalIcon rounded-circle">
-                                        <i class="material-icons" style="font-size: 3rem;">dashboard</i>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div id="dashboard_text" class="text-center" style="margin-left: 0.5rem"></div>
-                                </div>
+            <div class="crystalMenuBar">
+
+                <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('dashboard')" @mouseleave="hide_mouse_over('dashboard')">
+                    <div class="col">
+                        <div class="row">
+                            <div v-on:click="show_dashboard_window()" class="crystalIcon rounded-circle">
+                                <i class="material-icons" style="font-size: 3rem;">dashboard</i>
                             </div>
                         </div>
-
-                        <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('plots')" @mouseleave="hide_mouse_over('plots')">
-                            <div class="col">
-                                <div class="row">
-                                    <div v-on:click="show_plots_window()" class="crystalIcon rounded-circle">
-                                        <i class="material-icons" style="font-size: 3rem;">waves</i>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div id="plots_text" class="text-center" style="margin-left: 1.6rem"></div>
-                                </div>
-                            </div>
+                        <div class="row">
+                            <div id="dashboard_text" class="text-center" style="margin-left: 0.5rem"></div>
                         </div>
-
-                        <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('images')" @mouseleave="hide_mouse_over('images')">
-                            <div class="col">
-                                <div class="row">
-                                    <div v-on:click="show_images_window()" class="crystalIcon rounded-circle">
-                                        <i class="material-icons" style="font-size: 3rem;">filter_hdr</i>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div id="images_text" class="text-center" style="margin-left: 1.2rem"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Project Management Button -->
-                        <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('manage')" @mouseleave="hide_mouse_over('manage')">
-                            <div class="col">
-                                <div class="row">
-                                    <div id="show-modal" @click="show_project_management()" class="crystalIcon rounded-circle">
-                                        <i class="material-icons" style="font-size: 3rem;">ballot</i>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div id="manage_text" class="text-center" style="margin-left: 1.1rem"></div>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
 
-                <div class="col-lg-11">
+                <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('plots')" @mouseleave="hide_mouse_over('plots')">
+                    <div class="col">
+                        <div class="row">
+                            <div v-on:click="show_plots_window()" class="crystalIcon rounded-circle">
+                                <i class="material-icons" style="font-size: 3rem;">waves</i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="plots_text" class="text-center" style="margin-left: 1.6rem"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('images')" @mouseleave="hide_mouse_over('images')">
+                    <div class="col">
+                        <div class="row">
+                            <div v-on:click="show_images_window()" class="crystalIcon rounded-circle">
+                                <i class="material-icons" style="font-size: 3rem;">filter_hdr</i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="images_text" class="text-center" style="margin-left: 1.2rem"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Management Button -->
+                <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('manage')" @mouseleave="hide_mouse_over('manage')">
+                    <div class="col">
+                        <div class="row">
+                            <div id="show-modal" @click="show_project_management()" class="crystalIcon rounded-circle">
+                                <i class="material-icons" style="font-size: 3rem;">ballot</i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="manage_text" class="text-center" style="margin-left: 1.1rem"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-11 offset-md-1">
+                    <div class="textContent" v-if="showInstructions">
+                        <div class="container" style="text-align: center">
+                            <br/>
+                            Please pick the required <b>project</b> and <b>run</b> to display.
+                            <br/>
+                            <br/>
+                            Haven't made plots yet?
+                            <br/>
+                            No problem!
+                            <br/>
+                            <br/>
+                            Try this out to get started:
+                            <br/>
+                            <br/>
+                        </div>
+                        <div class="container">
+                            <pre class="prettyprint" style="border: none">
+                                import time
+                                import numpy as np
+                                from crystal import Crystal
+
+                                cr = Crystal(project_name="Realtime_sine")
+                                x_range = np.arange(0, 1000, 0.1)
+
+                                for i in x_range:
+                                value = np.sin(2*np.pi*i)
+                                cr.scalar(value=value, step=i, name="sine_wave")
+                                print("step: {} \t value: {}".format(i, value))
+                                time.sleep(1)  # one value a second
+                            </pre>
+                        </div>
+
+                        <div class="container" style="text-align: center">
+                            Checkout <a href="https://github.com/Naresh1318/crystal">this</a> link for more info!
+                        </div>
+                    </div>
                     <div v-if="current_window === 'plots'" class="row">
                         <div class="col-lg-6" v-for="value in current_variables">
                             <div class="shadow p-1 mb-5 bg-white card crystalCard">
@@ -198,7 +239,7 @@
 
                     <div class="row" v-if="current_window === 'images'">
                         <div class="col">
-                            <h1>You are now in the plots window</h1>
+                            <h1>You are now in the images window</h1>
                             <p>This section is still being worked on!</p>
                         </div>
                     </div>
@@ -250,6 +291,9 @@
                             <div class="modal-footer">
                                 <slot name="footer">
                                     <input type="text" class="form-control" v-on:keyup.enter="set_refresh_interval()" v-model="entered_refresh_time" placeholder="time in s"/>
+                                    <input type="text" class="form-control" v-on:keyup.enter="set_smoothing_value()" v-model="entered_smoothing_value" placeholder="Smoothing value in between 0 and 1."/>
+                                    <!--<input type="range" class="form-control-range" id="entered_smoothing_value">-->
+                                    <input type="range" min="1" max="100" value="50" class="slider" id="entered_smoothing_value">
                                     <button class="modal-default-button" @click="$emit('close')">
                                         OK
                                     </button>
