@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import os
+import io
 import csv
 import sqlite3
 import numpy as np
@@ -14,18 +15,45 @@ home_dir = os.path.expanduser("~")
 main_data_dir = os.path.join(home_dir, "Crystal_data")
 database_dir = os.path.join(main_data_dir, database_name)
 
+
+def adapt_array(arr):
+    """
+    http://stackoverflow.com/a/31312102/190597 (SoulNibbler)
+    """
+    out = io.BytesIO()
+    np.save(out, arr)
+    out.seek(0)
+    return sqlite3.Binary(out.read())
+
+
+def convert_array(text):
+    out = io.BytesIO(text)
+    out.seek(0)
+    return np.load(out)
+
 # TODO: Close database connections in all functions
 
 
-def open_data_base_connection():
+def open_data_base_connection(skip_dir_check=False):
     """
     Creates a connections to the crystal database.
+    :param skip_dir_check: bool, True  -> Skips checking database file and creates a new one if not present.
+                                          This is used by Crystal.py to create a new database the first time.
+                                 False -> Raises a error if the database file is not found.
     :return: conn, c -> connection and cursor object
     """
-    assert os.path.isfile(database_dir), \
-        "Database file not found in {}. " \
-        "Please ensure that you have written data atleast once.".format(database_dir)
-    conn = sqlite3.connect(database_dir)
+    if not skip_dir_check:
+        assert os.path.isfile(database_dir), \
+            "Database file not found in {}. " \
+            "Please ensure that you have written data atleast once.".format(database_dir)
+
+    # Converts np.array to TEXT when inserting
+    sqlite3.register_adapter(np.ndarray, adapt_array)
+
+    # Converts TEXT to np.array when selecting
+    sqlite3.register_converter("array", convert_array)
+
+    conn = sqlite3.connect(database_dir, detect_types=sqlite3.PARSE_DECLTYPES)
     c = conn.cursor()
     return conn, c
 

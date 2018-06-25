@@ -11,7 +11,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-
 import os
 import sys
 import sqlite3
@@ -20,7 +19,6 @@ import numpy as np
 from flask import Flask, render_template, jsonify, request, send_file, json
 
 import crystal.sql_table_utils as utils
-
 
 # Setup logging
 logging.basicConfig(
@@ -97,13 +95,15 @@ def update():
         try:
             # values for each variable
             for _, v_n in variable_names:
-                c.execute("""SELECT * FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n, current_index[v_n]))
-
-                values = np.array(c.fetchall())
                 try:
-                    current_data = values[:, 0].tolist()
-                    n_values = len(current_data)
-                    data[v_n] = {'x': current_data, 'y': values[:, 1].tolist()}
+                    c.execute("""SELECT X_value FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n,
+                                                                                   current_index[v_n]))
+                    x_values = np.array(c.fetchall()).squeeze().tolist()
+                    c.execute("""SELECT Y_value FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n,
+                                                                                   current_index[v_n]))
+                    y_values = np.array(c.fetchall()).squeeze().tolist()
+                    data[v_n] = {'x': x_values, 'y': y_values}
+                    n_values = len(x_values)
                     current_index["{}".format(v_n)] += n_values
                     logging.info("New value found and updated")
                 except IndexError:

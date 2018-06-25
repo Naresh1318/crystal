@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
         <!-- Animation CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 
         <!-- JS Code Prettifier -->
         <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
@@ -30,7 +30,7 @@
         <title>Crystal</title>
     </head>
 
-    <body>
+    <body class="customScrollBar">
     <div id="vue-dashboard" style="overflow-x: hidden" class="textContent">
 
         <!-- use the modal component, pass in the prop -->
@@ -213,29 +213,31 @@
                             Checkout <a href="https://github.com/Naresh1318/crystal">this</a> link for more info!
                         </div>
                     </div>
-                    <div v-if="current_window === 'plots'" class="row">
-                        <div class="col-lg-6" v-for="value in current_variables">
-                            <div class="shadow p-1 mb-5 bg-white card crystalCard">
-                                <h5 class="card-title crystalCardTitle"> {{value}} </h5>
-                                <div class="card-img" v-bind:id="value" style="width: auto"></div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col">
-                                            <button type="button" class="btn btn-raised btn-info" v-on:click="download_graph(value)">Download graph</button>
-                                        </div>
-                                        <div class="col" style="float: left; padding-left: 3rem">
-                                            <button type="button" class="btn btn-raised btn-info"  v-on:click="get_graph_csv(value)">Download CSV</button>
-                                        </div>
-                                        <div class="col-lg-1">
-                                            <button type="button" class="btn btn-info bmd-btn-icon">
-                                                <i class="material-icons">more_vert</i>
-                                            </button>
+
+                    <transition-group v-if="current_window === 'plots'" class="row" tag="div" name="slide-fade">
+                            <div class="col-lg-6" v-for="value in current_variables" :key="value">
+                                <div class="shadow p-1 mb-5 bg-white card crystalCard">
+                                    <h5 class="card-title crystalCardTitle"> {{value}} </h5>
+                                    <div class="card-img" v-bind:id="value" style="width: auto"></div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <button type="button" class="btn btn-raised btn-info" v-on:click="download_graph(value)">Download graph</button>
+                                            </div>
+                                            <div class="col" style="float: left; padding-left: 3rem">
+                                                <button type="button" class="btn btn-raised btn-info"  v-on:click="get_graph_csv(value)">Download CSV</button>
+                                            </div>
+                                            <div class="col-lg-1">
+                                                <button type="button" class="btn btn-info bmd-btn-icon">
+                                                    <i class="material-icons">more_vert</i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                    </transition-group>
+
 
                     <div class="row" v-if="current_window === 'images'">
                         <div class="col">
@@ -250,7 +252,7 @@
     <!-- End of dashboard cards -->
 
     <!-- Project management -->
-    <div id="vue-manage">
+    <div id="vue-manage" class="textContent">
         <script id="modal-template" type="text/x-template">
             <transition name="modal">
                 <div class="modal-mask" @click="close_project_management">
@@ -262,7 +264,7 @@
                                 </slot>
                             </div>
 
-                            <div class="modal-body">
+                            <div class="modal-body customScrollBar">
                                 <slot name="body">
                                     <div class="m-2" v-for="project in all_projects" @click="get_runs(project)">
                                         <div class="card row">
@@ -277,11 +279,13 @@
 
                                         <div v-for="(runs, project_key) in all_runs">
                                             <div v-if="project_key == project">
-                                                <div class="card m-1" v-for="run in runs" @click="delete_run(project, run)">
-                                                    <div class="card-body">
-                                                        {{run}}
-                                                    </div>
+                                                <transition-group tag="div" class="content__list" name="slide-fade">
+                                                <div class="card m-1" v-for="run in runs" @click="delete_run(project, run)" :key="run">
+                                                        <div class="card-body">
+                                                            {{run}}
+                                                        </div>
                                                 </div>
+                                                </transition-group>
                                             </div>
                                         </div>
                                     </div>
@@ -290,13 +294,15 @@
 
                             <div class="modal-footer">
                                 <slot name="footer">
-                                    <input type="text" class="form-control" v-on:keyup.enter="set_refresh_interval()" v-model="entered_refresh_time" placeholder="time in s"/>
-                                    <input type="text" class="form-control" v-on:keyup.enter="set_smoothing_value()" v-model="entered_smoothing_value" placeholder="Smoothing value in between 0 and 1."/>
-                                    <!--<input type="range" class="form-control-range" id="entered_smoothing_value">-->
-                                    <input type="range" min="1" max="100" value="50" class="slider" id="entered_smoothing_value">
-                                    <button class="modal-default-button" @click="$emit('close')">
-                                        OK
-                                    </button>
+                                    <div class="row" style="width: 100%">
+                                        <div class="col">
+                                            <input type="text" class="form-control" v-on:keyup.enter="set_refresh_interval()" v-model="entered_refresh_time" placeholder="time in s"/>
+                                        </div>
+                                        <div class="col">
+                                            <label>Graph Smoothing: {{entered_smoothing_value}}</label>
+                                            <input  class="form-control-range" type="range" min="0" max="1.3" step="0.1" v-on:change="set_smoothing_value()" v-model="entered_smoothing_value">
+                                        </div>
+                                    </div>
                                 </slot>
                             </div>
                         </div>

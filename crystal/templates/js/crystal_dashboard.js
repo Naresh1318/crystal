@@ -5,7 +5,7 @@ modal = Vue.extend({
     data: function() {
         return {
             entered_refresh_time: "",                // Used for two way data binding
-            entered_smoothing_value: "",
+            entered_smoothing_value: 1.0,
             title: "Project management",
             all_projects: {},
             all_runs: {},
@@ -29,7 +29,7 @@ modal = Vue.extend({
             Change the graph smoothing value to the desired value.
             This function uses two way data binding to transfer the entered value.
              */
-            vue_dashboard.smoothing_value = parseInt(this.entered_smoothing_value);
+            vue_dashboard.smoothing_value = parseFloat(this.entered_smoothing_value);
             force();
             console.log("smoothing_value set to " + vue_dashboard.smoothing_value);
         },
@@ -129,7 +129,6 @@ let vue_dashboard = new Vue({
                                                  // with the required ids that are used by plotly
         showModal: false,
         showInstructions: true,
-        smoothing_value: 1,
     },
     components: {
       "modal": modal,
@@ -392,10 +391,3 @@ function refresh() {
 function force() {
     vue_dashboard.set_run(vue_dashboard.current_run);
 }
-
-
-var slider = document.getElementById("entered_smoothing_value");
-
-slider.oninput = function() {
-    console.log(this.value);
-};

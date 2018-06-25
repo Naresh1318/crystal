@@ -142,3 +142,39 @@
 .textContent {
     font-family: 'Source Sans Pro', sans-serif;
 }
+
+/* Enter and leave animations can use different */
+/* durations and timing functions.              */
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .3s ease;
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateY(29px);
+  opacity: 0;
+}
+
+/*
+ *  Scroll bar
+ */
+
+.customScrollBar::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+.customScrollBar::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+.customScrollBar::-webkit-scrollbar-thumb
+{
+	background-color: #444444;
+}
+
