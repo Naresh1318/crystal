@@ -75,41 +75,18 @@ def update():
 
     :return: JSON Object, passed on to the JS script.
     """
-    conn, c = utils.open_data_base_connection()
-
+    assert request.method == "POST", "POST request expected received {}".format(request.method)
     if request.method == 'POST':
         # Get figure stats
         selected_run = request.form['selected_run']
         variable_names = utils.get_variables(selected_run).items()
-
-        data = {}
-        for _, v_n in variable_names:
-            data[v_n] = {'x': [], 'y': []}
 
         if len(current_index) < 1:
             for _, v_n in variable_names:
                 current_index[v_n] = 0
 
         logging.info("Current index: {}".format(current_index))
-
-        try:
-            # values for each variable
-            for _, v_n in variable_names:
-                try:
-                    c.execute("""SELECT X_value FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n,
-                                                                                   current_index[v_n]))
-                    x_values = np.array(c.fetchall()).squeeze().tolist()
-                    c.execute("""SELECT Y_value FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n,
-                                                                                   current_index[v_n]))
-                    y_values = np.array(c.fetchall()).squeeze().tolist()
-                    data[v_n] = {'x': x_values, 'y': y_values}
-                    n_values = len(x_values)
-                    current_index["{}".format(v_n)] += n_values
-                    logging.info("New value found and updated")
-                except IndexError:
-                    logging.info("No new data point found")
-        except KeyError:
-            logging.error("I think the run variable has changes. So, I'm passing no data.")
+        data = utils.get_variable_update_dicts(current_index, variable_names, selected_run)
 
         return jsonify(data)
 

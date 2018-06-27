@@ -143,15 +143,11 @@ let vue_dashboard = new Vue({
             rq.onreadystatechange = function(vm) {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
-                        var receivedJSON = JSON.parse(rq.responseText);
-                        for (var k in vm.current_variables) {
+                        const receivedJSON = JSON.parse(rq.responseText);
+                        for (let k in vm.current_variables) {
                             let current_value = vm.current_variables[k];
-                            var update = {
-                                x:  [receivedJSON[current_value]['x']],
-                                y: [receivedJSON[current_value]['y']]
-                            };
+                            vm.update_plots(current_value, receivedJSON);
                             // console.log(receivedJSON[current_value]['x']);
-                            Plotly.extendTraces(current_value, update, [0]);
                         }
                     } else {
                         console.log("Nothing received");
@@ -161,6 +157,29 @@ let vue_dashboard = new Vue({
             rq.open("POST", "/update", true);
             rq.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
             rq.send("selected_run="+this.current_run);
+        },
+        update_plots: function(current_value, receivedJSON) {
+            const plot_type = current_value.split("_")[0];
+            if (plot_type === "scalar") {
+                let update = {
+                    x:  [receivedJSON[current_value]['x']],
+                    y: [receivedJSON[current_value]['y']],
+                };
+                Plotly.extendTraces(current_value, update, [0]);
+            }
+            else if (plot_type === "heatmap") {
+                let update = {
+                    x: [receivedJSON[current_value]['vn']],
+                    y: [receivedJSON[current_value]['vn']],
+                    z: [receivedJSON[current_value]['z']],
+                };
+                if (update.z[0].length > 0) {
+                    Plotly.update(current_value, update, [0]);
+                }
+            }
+            else {
+                console.log("Update type" + plot_type + " not found.");
+            }
         },
         get_projects: function() {
             /*
@@ -241,24 +260,53 @@ let vue_dashboard = new Vue({
                 return false;
             }
             for (let k in this.current_variables) {
-                current_value = this.current_variables[k];
-                var layout = {
-                    showlegend: true,
-                    autosize: true,
-                    margin: {b: 30, t: 20, l: 50, r: 50},
-                };
-                var trace = [{
-                    name: current_value,
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    line: {shape: "spline", smoothing: this.smoothing_value}
-                }];
-                Plotly.newPlot(current_value, trace, layout, {displayModeBar: false});
-                console.log("Showing plots!");
+                let current_value = this.current_variables[k];
+                const plot_type = current_value.split("_")[0];
+                if (plot_type === "scalar") {
+                    this.show_scalar_plot(current_value);
+                }
+                else if (plot_type === "heatmap") {
+                    this.show_heatmap_plot(current_value);
+                }
+                else {
+                    console.log("Plot type" + plot_type + " not found.");
+                }
             }
             this.toggle_refresh();
             return true;
+        },
+        show_scalar_plot: function(current_value) {
+            let layout = {
+                showlegend: true,
+                autosize: true,
+                margin: {b: 30, t: 20, l: 50, r: 50},
+            };
+            let trace = [{
+                name: current_value,
+                x: [],
+                y: [],
+                type: 'scatter',
+                line: {shape: "spline", smoothing: this.smoothing_value}
+            }];
+            Plotly.newPlot(current_value, trace, layout, {displayModeBar: false});
+            console.log("Scalar Plot: " + current_value);
+        },
+        show_heatmap_plot: function(current_value) {
+            let layout = {
+                showlegend: true,
+                autosize: true,
+                margin: {b: 30, t: 20, l: 50, r: 50},
+            };
+            let trace = [{
+                name: current_value,
+                x: [],
+                y: [],
+                z: [],
+                colorscale: 'YIGnBu',
+                type: 'heatmap',
+            }];
+            Plotly.newPlot(current_value, trace, layout, {displayModeBar: false});
+            console.log("Heatmap Plot: " + current_value);
         },
         set_run: function (run_selected) {
             /*

@@ -6,6 +6,7 @@ import os
 import io
 import csv
 import sqlite3
+import logging
 import numpy as np
 
 
@@ -225,6 +226,73 @@ def get_variables(run_name):
     conn.close()
 
     return variable_names
+
+
+def get_variable_update_dicts(current_index, variable_names, selected_run):
+    """
+
+    :return:
+    """
+    conn, c = open_data_base_connection()
+    data = {}
+    for _, v_n in variable_names:
+        data[v_n] = {'x': [], 'y': [], 'z': [], 'vn': []}
+
+    try:
+        # values for each variable
+        for _, v_n in variable_names:
+            plot_type = v_n.split("_")[0]
+            if plot_type == "scalar":
+                try:
+                    c.execute("""SELECT X_value FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n,
+                                                                                   current_index[v_n]))
+                    x_values = np.array(c.fetchall()).squeeze().tolist()
+                    c.execute("""SELECT Y_value FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n,
+                                                                                   current_index[v_n]))
+                    y_values = np.array(c.fetchall()).squeeze().tolist()
+                    data[v_n]["x"] = x_values
+                    data[v_n]["y"] = y_values
+                    n_values = len(x_values)
+                    current_index["{}".format(v_n)] += n_values
+                    logging.info("New value found and updated")
+                except IndexError:
+                    logging.info("No new data point found")
+            elif plot_type == "heatmap":
+                try:
+                    c.execute("""SELECT X_value FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n,
+                                                                                   current_index[v_n]))
+                    x_values = np.array(c.fetchall()).squeeze().tolist()
+                    c.execute("""SELECT Y_value FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n,
+                                                                                   current_index[v_n]))
+                    y_values = np.array(c.fetchall()).squeeze().tolist()
+                    c.execute("""SELECT V_names FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n,
+                                                                                   current_index[v_n]))
+                    v_values = np.array(c.fetchall()).squeeze().tolist()
+                    data[v_n]["x"] = x_values
+                    data[v_n]["z"] = y_values
+                    data[v_n]["vn"] = v_values
+                    n_values = len(x_values)
+                    current_index["{}".format(v_n)] += n_values
+                    logging.info("New value found and updated")
+                except sqlite3.OperationalError:
+                    c.execute("""SELECT X_value FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n,
+                                                                                   current_index[v_n]))
+                    x_values = np.array(c.fetchall()).squeeze().tolist()
+                    c.execute("""SELECT Y_value FROM {} WHERE rowid > {}""".format(selected_run + "_" + v_n,
+                                                                                   current_index[v_n]))
+                    y_values = np.array(c.fetchall()).squeeze().tolist()
+                    data[v_n]["x"] = x_values
+                    data[v_n]["z"] = y_values
+                    n_values = len(x_values)
+                    current_index["{}".format(v_n)] += n_values
+                    logging.info("New value found and updated")
+                except IndexError:
+                    logging.info("No new data point found")
+    except KeyError:
+        logging.error("I think the run variable has changes. So, I'm passing no data.")
+
+    conn.close()
+    return data
 
 
 def generate_graph_csv(variable_table_name):
