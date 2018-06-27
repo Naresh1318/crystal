@@ -282,7 +282,7 @@ let vue_dashboard = new Vue({
                 margin: {b: 30, t: 20, l: 50, r: 50},
             };
             let trace = [{
-                name: current_value,
+                name: this.extract_correct_name(current_value),  // Remove variable type from its name
                 x: [],
                 y: [],
                 type: 'scatter',
@@ -298,7 +298,7 @@ let vue_dashboard = new Vue({
                 margin: {b: 30, t: 20, l: 50, r: 50},
             };
             let trace = [{
-                name: current_value,
+                name: this.extract_correct_name(current_value),  // Remove variable type from its name,
                 x: [],
                 y: [],
                 z: [],
@@ -412,6 +412,9 @@ let vue_dashboard = new Vue({
         },
         show_project_management: function () {
             this.showModal = true;  // Display project management modal
+        },
+        extract_correct_name: function (variable_name) {
+            return variable_name.slice(variable_name.indexOf("_")+1);
         }
     },
     

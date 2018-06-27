@@ -45,17 +45,50 @@
                     <div class="col">
                         <div class="row">
                             <div class="col">
-                                <h3>Crystal</h3>
+                                <h2>Crystal</h2>
                             </div>
                         </div>
+                        <br/>
                         <div class="row">
                             <div class="col">
                                 <div class="row">
                                     <div class="col-lg-3">
-                                        <h4>Project: {{current_project}} </h4>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <h4>Project: </h4>
+                                            </div>
+                                            <div class="col">
+                                                <div class="dropdown">
+                                                    <button v-on:click="get_projects()" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        {{current_project}}
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <a v-on:click="set_project(value)" v-for="value in all_projects" class="dropdown-item" href="#">
+                                                            {{value}}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col">
-                                        <h4>Run: {{current_run}} </h4>
+                                        <div class="row">
+                                            <div class="col-lg-1">
+                                                <h4>Run: </h4>
+                                            </div>
+                                            <div class="col">
+                                                <div class="dropdown">
+                                                    <button v-on:click="get_runs()" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        {{current_run}}
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <a v-on:click="set_run(value)" v-for="value in all_runs" class="dropdown-item mw-100" href="#">
+                                                            {{value}}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -65,7 +98,7 @@
             </div>
             <div class="col-lg-2">
                 <div class="row">
-                    <div class="col">
+                    <div class="col-lg-8">
                         <button class="btn btn-secondary" v-on:click="toggle_refresh()">
                             {{refresh_button_text}}
                         </button>
@@ -85,31 +118,10 @@
         <div class="row mt-3">
             <div class="col-lg-1"></div>
             <div class="col">
-                <div class="row test">
-                    <div class="col-lg-2">
-                        <div class="dropdown">
-                            <button v-on:click="get_projects()" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Select Project
-                            </button>
-                            <div class="dropdown-menu">
-                                <a v-on:click="set_project(value)" v-for="value in all_projects" class="dropdown-item" href="#">
-                                    {{value}}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <div class="dropdown">
-                            <button v-on:click="get_runs()" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Select Run
-                            </button>
-                            <div class="dropdown-menu">
-                                <a v-on:click="set_run(value)" v-for="value in all_runs" class="dropdown-item mw-100" href="#">
-                                    {{value}}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                <div class="row">
+                    <h4>
+                        Test message!
+                    </h4>
                 </div>
             </div>
         </div>
@@ -215,27 +227,27 @@
                     </div>
 
                     <transition-group v-if="current_window === 'plots'" class="row" tag="div" name="slide-fade">
-                            <div class="col-lg-6" v-for="value in current_variables" :key="value">
-                                <div class="shadow p-1 mb-5 bg-white card crystalCard">
-                                    <h5 class="card-title crystalCardTitle"> {{value}} </h5>
-                                    <div class="card-img" v-bind:id="value" style="width: auto"></div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">
-                                                <button type="button" class="btn btn-raised btn-info" v-on:click="download_graph(value)">Download graph</button>
-                                            </div>
-                                            <div class="col" style="float: left; padding-left: 3rem">
-                                                <button type="button" class="btn btn-raised btn-info"  v-on:click="get_graph_csv(value)">Download CSV</button>
-                                            </div>
-                                            <div class="col-lg-1">
-                                                <button type="button" class="btn btn-info bmd-btn-icon">
-                                                    <i class="material-icons">more_vert</i>
-                                                </button>
-                                            </div>
+                        <div class="col-lg-6" v-for="value in current_variables" :key="value">
+                            <div class="shadow p-1 mb-5 bg-white card crystalCard">
+                                <h5 class="card-title crystalCardTitle"> {{extract_correct_name(value)}} </h5>
+                                <div class="card-img" v-bind:id="value" style="width: auto"></div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <button type="button" class="btn btn-raised btn-info" v-on:click="download_graph(value)">Download graph</button>
+                                        </div>
+                                        <div class="col" style="float: left; padding-left: 3rem">
+                                            <button type="button" class="btn btn-raised btn-info"  v-on:click="get_graph_csv(value)">Download CSV</button>
+                                        </div>
+                                        <div class="col-lg-1">
+                                            <button type="button" class="btn btn-info bmd-btn-icon">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                     </transition-group>
 
 
