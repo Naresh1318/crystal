@@ -111,7 +111,6 @@ modal = Vue.extend({
     },
 });
 
-
 let vue_dashboard = new Vue({
     el: '#vue-dashboard',
     data: {
@@ -129,6 +128,8 @@ let vue_dashboard = new Vue({
                                                  // with the required ids that are used by plotly
         showModal: false,
         showInstructions: true,
+        scalar_variable_values: {},              // Might be used later to animate graphs
+        heatmap_variable_values: {},
     },
     components: {
       "modal": modal,
@@ -166,14 +167,36 @@ let vue_dashboard = new Vue({
                     y: [receivedJSON[current_value]['y']],
                 };
                 Plotly.extendTraces(current_value, update, [0]);
+
+                //     this.scalar_variable_values[current_value]["x"] = this.scalar_variable_values[current_value]["x"].concat(receivedJSON[current_value]["x"]);
+                //     this.scalar_variable_values[current_value]["y"] = this.scalar_variable_values[current_value]["y"].concat(receivedJSON[current_value]["y"]);
+                //     Plotly.animate(current_value, {
+                //             data: [{
+                //                 x: this.scalar_variable_values[current_value]["x"],
+                //                 y: this.scalar_variable_values[current_value]["y"]
+                //             }],
+                //             traces: [0],
+                //             layout: layout,
+                //         },
+                //         {
+                //             transition: {
+                //                 duration: 500,
+                //                 easing: 'cubic-in-out'
+                //             }
+                //         });
+                //
             }
             else if (plot_type === "heatmap") {
+                this.heatmap_variable_values[current_value]["vn"] = this.heatmap_variable_values[current_value]["vn"].concat(receivedJSON[current_value]['vn']);
+                this.heatmap_variable_values[current_value]["z"] = this.heatmap_variable_values[current_value]["z"].concat(receivedJSON[current_value]['z']);
+
                 let update = {
-                    x: [receivedJSON[current_value]['vn']],
-                    y: [receivedJSON[current_value]['vn']],
-                    z: [receivedJSON[current_value]['z']],
+                    x: [receivedJSON[current_value]['vn'][receivedJSON[current_value]['vn'].length-1]],
+                    y: [receivedJSON[current_value]['vn'][receivedJSON[current_value]['vn'].length-1]],
+                    z: [receivedJSON[current_value]['z'][receivedJSON[current_value]['z'].length-1]],
                 };
-                if (update.z[0].length > 0) {
+
+                if (update.z[0] != null) {
                     Plotly.update(current_value, update, [0]);
                 }
             }
@@ -276,6 +299,7 @@ let vue_dashboard = new Vue({
             return true;
         },
         show_scalar_plot: function(current_value) {
+            this.scalar_variable_values[current_value] = {"x": [], "y": []};
             let layout = {
                 showlegend: true,
                 autosize: true,
@@ -283,8 +307,8 @@ let vue_dashboard = new Vue({
             };
             let trace = [{
                 name: this.extract_correct_name(current_value),  // Remove variable type from its name
-                x: [],
-                y: [],
+                x: this.scalar_variable_values[current_value]["x"],
+                y: this.scalar_variable_values[current_value]["y"],
                 type: 'scatter',
                 line: {shape: "spline", smoothing: this.smoothing_value}
             }];
@@ -292,16 +316,18 @@ let vue_dashboard = new Vue({
             console.log("Scalar Plot: " + current_value);
         },
         show_heatmap_plot: function(current_value) {
+            this.heatmap_variable_values[current_value] = {"vn": [], "z": []};
             let layout = {
                 showlegend: true,
                 autosize: true,
                 margin: {b: 30, t: 20, l: 50, r: 50},
+                yaxis: {autorange: 'reversed'},
             };
             let trace = [{
                 name: this.extract_correct_name(current_value),  // Remove variable type from its name,
-                x: [],
-                y: [],
-                z: [],
+                x: this.heatmap_variable_values[current_value]["x"],
+                y: this.heatmap_variable_values[current_value]["y"],
+                z: this.heatmap_variable_values[current_value]["z"],
                 colorscale: 'YIGnBu',
                 type: 'heatmap',
             }];

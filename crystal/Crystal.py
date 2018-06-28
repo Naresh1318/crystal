@@ -193,9 +193,9 @@ class Crystal:
                               )""".format(variable_table_name=self.time_stamp + '_' + name))
 
             self.c.execute("""INSERT INTO {variable_table_name} (
-                              X_value, Y_value, V_names, time) VALUES ('{x}', {y}, {v_names}, '{time}'
-                              )""".format(variable_table_name=self.time_stamp + '_' + name,
-                                          x=step, y=value, v_names=value_names, time=datetime.datetime.now()))
+                              X_value, Y_value, V_names, time) VALUES (?, ?, ?, ?
+                              )""".format(variable_table_name=self.time_stamp + '_' + name),
+                                          (step, value, value_names, datetime.datetime.now()))
 
         self.conn.commit()
 
