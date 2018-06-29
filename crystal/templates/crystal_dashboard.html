@@ -52,15 +52,15 @@
                         <div class="row">
                             <div class="col">
                                 <div class="row">
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-4">
                                         <div class="row">
-                                            <div class="col-lg-4">
-                                                <h4>Project: </h4>
+                                            <div class="col-lg-2">
+                                                <h4 style="margin-top:0.45rem">Project: </h4>
                                             </div>
                                             <div class="col">
                                                 <div class="dropdown">
-                                                    <button v-on:click="get_projects()" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        {{current_project}}
+                                                    <button v-on:click="get_projects()" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-transform: inherit;">
+                                                        <span style="font-size: 1.3rem">{{current_project}}</span>
                                                     </button>
                                                     <div class="dropdown-menu">
                                                         <a v-on:click="set_project(value)" v-for="value in all_projects" class="dropdown-item" href="#">
@@ -74,12 +74,12 @@
                                     <div class="col">
                                         <div class="row">
                                             <div class="col-lg-1">
-                                                <h4>Run: </h4>
+                                                <h4 style="margin-left: 2rem; margin-top:0.45rem">Run: </h4>
                                             </div>
                                             <div class="col">
                                                 <div class="dropdown">
-                                                    <button v-on:click="get_runs()" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        {{current_run}}
+                                                    <button v-on:click="get_runs()" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="text-transform: inherit;">
+                                                        <span style="font-size: 1.3rem">{{current_run}}</span>
                                                     </button>
                                                     <div class="dropdown-menu">
                                                         <a v-on:click="set_run(value)" v-for="value in all_runs" class="dropdown-item mw-100" href="#">
@@ -115,16 +115,17 @@
         </div>
 
 
-        <div class="row mt-3">
-            <div class="col-lg-1"></div>
-            <div class="col">
-                <div class="row">
-                    <h4>
-                        Test message!
-                    </h4>
-                </div>
-            </div>
-        </div>
+        <!-- Info display: Will bw used later -->
+        <!--<div class="row mt-3">-->
+            <!--<div class="col-lg-1"></div>-->
+            <!--<div class="col">-->
+                <!--<div class="row">-->
+                    <!--<h4>-->
+                        <!--Test message!-->
+                    <!--</h4>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
 
 
         <!-- Dashboard cards -->
@@ -204,6 +205,7 @@
                             <br/>
                             <br/>
                         </div>
+                        <br/>
                         <div class="container">
                             <pre class="prettyprint" style="border: none">
                                 import time
@@ -277,9 +279,9 @@
                 <div class="modal-mask" @click="close_project_management">
                     <div class="modal-wrapper">
                         <div class="modal-container">
-                            <div class="modal-header">
+                            <div class="modal-header" style="font-family: 'Source Sans Pro', sans-serif;">
                                 <slot name="header">
-                                    {{title}}
+                                    <h4>{{title}}<h4/>
                                 </slot>
                             </div>
 
@@ -289,9 +291,9 @@
                                         <div class="card row">
                                             <div class="p-2">
                                                 <div class="col">
-                                                    <h3>
+                                                    <h5>
                                                         {{project}}
-                                                    </h3>
+                                                    </h5>
                                                 </div>
                                             </div>
                                         </div>

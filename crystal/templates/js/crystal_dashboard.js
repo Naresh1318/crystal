@@ -114,8 +114,8 @@ modal = Vue.extend({
 let vue_dashboard = new Vue({
     el: '#vue-dashboard',
     data: {
-        current_project: "",                     // Selected project
-        current_run: "",                         // Selected run
+        current_project: "Select a project",                     // Selected project
+        current_run: "Select a run",                         // Selected run
         current_variables: {},                   // Object that will contain the variables to be shown
         current_window: "plots",                 // Which window is the user currently in -> plots, images,
         all_projects: {},                        // Must be an empty Object to show nothing on the DOM
@@ -132,7 +132,7 @@ let vue_dashboard = new Vue({
         heatmap_variable_values: {},
     },
     components: {
-      "modal": modal,
+        "modal": modal,
     },
     methods: {
         refresh: function () {
@@ -370,9 +370,9 @@ let vue_dashboard = new Vue({
                 this.refresh_button_text = "Stop Refreshing";
                 // Refresh once and then start timer, this makes it fell right
                 refresh();
-                 this.timer = setInterval(function () {
+                this.timer = setInterval(function () {
                     refresh();
-                 }, this.refresh_time);
+                }, this.refresh_time);
             }
             this.refreshing = !this.refreshing;
             console.log("Refresh toggled");
