@@ -135,8 +135,8 @@
                 <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('dashboard')" @mouseleave="hide_mouse_over('dashboard')">
                     <div class="col">
                         <div class="row">
-                            <div v-on:click="show_dashboard_window()" class="crystalIcon rounded-circle">
-                                <i class="material-icons" style="font-size: 3rem;">dashboard</i>
+                            <div v-on:click="show_dashboard_window()" class="crystalIcon rounded-circle btn" style="padding: 0!important;">
+                                <i class="material-icons" style="font-size: 3rem; margin-top: 0.7rem;">dashboard</i>
                             </div>
                         </div>
                         <div class="row">
@@ -148,8 +148,8 @@
                 <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('plots')" @mouseleave="hide_mouse_over('plots')">
                     <div class="col">
                         <div class="row">
-                            <div v-on:click="show_plots_window()" class="crystalIcon rounded-circle">
-                                <i class="material-icons" style="font-size: 3rem;">waves</i>
+                            <div v-on:click="show_plots_window()" class="crystalIcon rounded-circle btn" style="padding: 0!important;">
+                                <i class="material-icons" style="font-size: 3rem; margin-top: 0.7rem;">waves</i>
                             </div>
                         </div>
                         <div class="row">
@@ -161,8 +161,8 @@
                 <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('images')" @mouseleave="hide_mouse_over('images')">
                     <div class="col">
                         <div class="row">
-                            <div v-on:click="show_images_window()" class="crystalIcon rounded-circle">
-                                <i class="material-icons" style="font-size: 3rem;">filter_hdr</i>
+                            <div v-on:click="show_images_window()" class="crystalIcon rounded-circle btn" style="padding: 0!important;">
+                                <i class="material-icons" style="font-size: 3rem; margin-top: 0.7rem;">filter_hdr</i>
                             </div>
                         </div>
                         <div class="row">
@@ -175,8 +175,8 @@
                 <div class="row h-25 crystalIconContainer"  @mouseenter="show_mouse_over('manage')" @mouseleave="hide_mouse_over('manage')">
                     <div class="col">
                         <div class="row">
-                            <div id="show-modal" @click="show_project_management()" class="crystalIcon rounded-circle">
-                                <i class="material-icons" style="font-size: 3rem;">ballot</i>
+                            <div id="show-modal" @click="show_project_management()" class="crystalIcon rounded-circle btn" style="padding: 0!important;">
+                                <i class="material-icons" style="font-size: 3rem; margin-top: 0.7rem;">ballot</i>
                             </div>
                         </div>
                         <div class="row">
@@ -240,9 +240,16 @@
                                             <button type="button" class="btn btn-raised btn-info"  v-on:click="get_graph_csv(value)">Download CSV</button>
                                         </div>
                                         <div class="col-lg-1">
-                                            <button type="button" class="btn btn-info bmd-btn-icon">
-                                                <i class="material-icons">more_vert</i>
-                                            </button>
+                                            <div class="dropdown">
+                                                <button class="btn bmd-btn-icon dropdown-toggle" type="button" id="ex1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="material-icons">more_vert</i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-left" aria-labelledby="ex1">
+                                                    <button class="dropdown-item" type="button">Action</button>
+                                                    <button class="dropdown-item disabled" type="button">Another action</button>
+                                                    <button class="dropdown-item" type="button">Another action</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
