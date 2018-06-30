@@ -5,7 +5,7 @@
 <img src="https://raw.githubusercontent.com/Naresh1318/crystal/master/README/crystal_logo_cropped.png" alt="crystal logo" width=40%/>
 
 <p align="center"> A realtime plotting and project management library built using Plotly </p>
- 
+
 </p>
 
 
@@ -90,13 +90,37 @@ this:
 <img src="https://raw.githubusercontent.com/Naresh1318/crystal/master/README/crystal_video.gif" alt="crystal gif" width=100% />
 
 <p align="center"> Crystal Dashboard in action </p>
- 
+
 </p>
-
-
-## How can this be helpful?
 
 ## Where can I learn more?
 
-## How can I contribute?
+Docs are still being worked on. Feel free to contribute in documenting the usage!
 
+## Built With
+
+* [Plotly](https://plot.ly/javascript/) - Graphing library
+* [Flask](http://flask.pocoo.org/) - Microframework used to build the dashboard backend 
+* [Material Design for Bootstrap](https://fezvrasta.github.io/bootstrap-material-design/) - Styling the dashboard
+
+## Contributing
+
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/Naresh1318/crystal/tags). 
+
+## Authors
+
+* **Naresh Nagabushan** - *Initial work* - [naresh1318](https://github.com/Naresh1318)
+
+See also the list of [contributors](https://github.com/Naresh1318/crystal/graphs/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+* Inspired by [Tensorboard](https://www.tensorflow.org/programmers_guide/summaries_and_tensorboard)
