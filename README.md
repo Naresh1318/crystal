@@ -17,17 +17,23 @@ make it useful not just for Machine Learning but, in any project that needs real
 visualizations. You can include realtime plots in your python (more languages to come) easily 
 with just two line of code.
 
+Some features provided by crystal include;
+* Centralized database to store the results of all projects.
+* Easy way to download results from the database if needed.
+* Plots supported include scalar, histogram and images with more to come.
+
+
 To get started just install crystal using pip as follows:
 
 ``` bash
-pip install crystal
+$ pip install crystal
 ```
 
-The installation adds a path to crystal script to `PATH` on linux which allows you to run
-the crystal dashboard from any directory by running on bash:
+The installation adds a path to crystal script to `PATH` variable on linux which allows you to run
+the crystal dashboard from any directory as follows:
 
 ```bash
-crystal
+$ crystal
 ```
 
 
@@ -36,7 +42,7 @@ crystal
 the environment is activated.
 
 
-Here's how you'd plot a sine wave in realtime:
+Here's how you'd plot a sine wave using crystal:
 
 ```python 
 """
@@ -58,22 +64,29 @@ for i in x_range:
 
 ```
 
+Let's have a closer look at some of the functions used in the above code:
+* `cr = Crystal(project_name=..)` creates a new project in the database, if no project
+name is provided then, the script name is used as the project name.
+* `cr.scalar(value=..)` plots a scalar value and takes three parameters,
+`value` stores the y-axis value which in this case is the sin output, `step` saves
+the x-axis value and `name` provides a title for the plot.
+* Each run in a project is assigned a unique run id that contains the time stamp. 
+You can see them in the terminal and also the dashboard (described below).
+* All the data is stores under `~/Crystal_data/crystal.db`.  
+
 **Output:**
 
-Running crystal from the terminal  
-(**Ensure that the virtual environment containing crystal has been loaded**):
+Run 
 
 ```bash
-crystal 
+$ crystal 
 ```
 
+and select a project and run name. You will see a plot that looks something like 
+this:
 
-## Insert image here:
+<iframe src='//gifs.com/embed/59kPxx' frameborder='0' scrolling='no' width='1920px' height='948px' style='-webkit-backface-visibility: hidden;-webkit-transform: scale(1);' ></iframe>
 
-
-
-
-### Docs coming soon!
 
 
 ## How can this be helpful?
