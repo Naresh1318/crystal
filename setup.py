@@ -25,7 +25,7 @@ setup(name='crystal',
       python_requires='>=3',
       zip_safe=False,
       install_requires=[
-            'numpy==1.14.5',
+            'numpy',
             'Flask==1.0.2'
       ],
       include_package_data=True,

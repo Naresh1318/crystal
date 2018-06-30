@@ -10,11 +10,23 @@ import logging
 import numpy as np
 
 
+class DatabaseDir:
+    def __init__(self):
+        self.database_name = "crystal.db"
+        self.home_dir = os.path.expanduser("~")
+        self.main_data_dir = os.path.join(self.home_dir, "Crystal_data")
+        self.database_dir = os.path.join(self.main_data_dir, self.database_name)
+
+    def get_database_dir(self):
+        return self.database_dir
+
+    def set_database_dir(self, new_database_dir):
+        self.database_dir = new_database_dir
+        logging.info("Database dir set to: {}".format(self.database_dir))
+
+
 # Get main dataset directory
-database_name = "crystal.db"
-home_dir = os.path.expanduser("~")
-main_data_dir = os.path.join(home_dir, "Crystal_data")
-database_dir = os.path.join(main_data_dir, database_name)
+dd = DatabaseDir()
 
 
 def adapt_array(arr):
@@ -32,6 +44,7 @@ def convert_array(text):
     out.seek(0)
     return np.load(out)
 
+
 # TODO: Close database connections in all functions
 
 
@@ -44,9 +57,9 @@ def open_data_base_connection(skip_dir_check=False):
     :return: conn, c -> connection and cursor object
     """
     if not skip_dir_check:
-        assert os.path.isfile(database_dir), \
+        assert os.path.isfile(dd.get_database_dir()), \
             "Database file not found in {}. " \
-            "Please ensure that you have written data atleast once.".format(database_dir)
+            "Please ensure that you have written data atleast once.".format(dd.get_database_dir())
 
     # Converts np.array to TEXT when inserting
     sqlite3.register_adapter(np.ndarray, adapt_array)
@@ -54,7 +67,7 @@ def open_data_base_connection(skip_dir_check=False):
     # Converts TEXT to np.array when selecting
     sqlite3.register_converter("array", convert_array)
 
-    conn = sqlite3.connect(database_dir, detect_types=sqlite3.PARSE_DECLTYPES)
+    conn = sqlite3.connect(dd.get_database_dir(), detect_types=sqlite3.PARSE_DECLTYPES)
     c = conn.cursor()
     return conn, c
 
@@ -77,13 +90,13 @@ def drop_run(project_name, run_name):
         print("Did not find any values, so deleting run table directly.")
 
     c.execute("""DROP TABLE IF EXISTS {}""".format(run_name))
-    c.execute("""DELETE FROM {} WHERE run_name='{}'""".format(project_name+'_run_table', run_name))
+    c.execute("""DELETE FROM {} WHERE run_name='{}'""".format(project_name + '_run_table', run_name))
 
     # delete project if project_name+'_run_table' is empty
-    c.execute("""SELECT run_name FROM {}""".format(project_name+'_run_table'))
+    c.execute("""SELECT run_name FROM {}""".format(project_name + '_run_table'))
     all_runs = c.fetchall()
     if len(all_runs) == 0:
-        c.execute("""DROP TABLE IF EXISTS {}""".format(project_name+'_run_table'))
+        c.execute("""DROP TABLE IF EXISTS {}""".format(project_name + '_run_table'))
         c.execute("""DELETE FROM main_table WHERE project_name='{}'""".format(project_name))
 
     conn.commit()

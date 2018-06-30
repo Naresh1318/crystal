@@ -11,7 +11,7 @@ import numpy as np
 from . import sql_table_utils as utils
 
 
-DATABASE_DIR_NAME = "Crystal_data"
+DEFAULT_DATABASE_DIR_NAME = "Crystal_data"
 
 
 def get_valid_time_stamp():
@@ -33,7 +33,7 @@ class Crystal:
     * Creates a new run table for every class instantiation.
     """
 
-    def __init__(self, project_name=None):
+    def __init__(self, project_name=None, database_dir=None):
         """
         Create a crystal instance that could be used to write data onto the database.
         :param project_name: str, default -> None, uses the script name the instance is being used from as the
@@ -53,12 +53,15 @@ class Crystal:
         self.time_stamp = get_valid_time_stamp()
         self.previous = [None]
 
-        # Create a new database on the home directory if not present
-        home_dir = os.path.expanduser("~")
-        main_data_dir = os.path.join(home_dir, DATABASE_DIR_NAME)
-        if not os.path.exists(main_data_dir):
-            print("Crystal_data directory not found. Creating a new one...")
-            os.mkdir(main_data_dir)
+        if database_dir is None:
+            # Create a new database on the home directory if not present
+            home_dir = os.path.expanduser("~")
+            main_data_dir = os.path.join(home_dir, DEFAULT_DATABASE_DIR_NAME)
+            if not os.path.exists(main_data_dir):
+                print("Crystal_data directory not found. Creating a new one...")
+                os.mkdir(main_data_dir)
+        else:
+            utils.dd.set_database_dir(new_database_dir=database_dir)
 
         # Create new project and run tables if not already found
         self.conn, self.c = utils.open_data_base_connection(skip_dir_check=True)
