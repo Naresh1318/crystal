@@ -17,38 +17,23 @@ make it useful not just for Machine Learning but, in any project that needs real
 visualizations. You can include realtime plots in your python (more languages to come) easily 
 with just two line of code.
 
-To get started you'll first have to install crystal using pip as follows:
+To get started just install crystal using pip as follows:
 
 ``` bash
 pip install crystal
 ```
 
-If you want to run the crystal dashboard from any directory, then you will need to add `~/crystal_data/bin/`
-to you .bashrc file:
-
-Make the bash file under: `~/Crystal_data/bin/crystal` executable:
-Run the following from the folder containing crystal bash script.
+The installation adds a path to crystal script to `PATH` on linux which allows you to run
+the crystal dashboard from any directory by running on bash:
 
 ```bash
-chmod +x crystal
+crystal
 ```
-
-```bash
-vim ~/.bashrc
-```
-
-Add the bin folder in `~/Crystal_data/bin/` in the .bashrc file:
-Paste the following at the end of the file.
-
-`export PATH=$PATH:~/Crystal_data/bin/`
-
-Now, source the changes by running:
-
-`source ~/.bashrc`
 
 
 **Note:** 
-* Currently, only python 3 is supported.
+* If you install it on a virtual environment then you will only be able to run it only when
+the environment is activated.
 
 
 Here's how you'd plot a sine wave in realtime:
@@ -80,20 +65,6 @@ Running crystal from the terminal
 
 ```bash
 crystal 
-```
-
-If you don't mind running it manually then:
-
-In the environment contaning crytal installation run:
-
-```bash
-python
-```
-
-In the python interpreter, run:
-```python
-from crystal import app
-app.app.run()
 ```
 
 
