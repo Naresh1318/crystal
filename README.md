@@ -85,8 +85,13 @@ $ crystal
 and select a project and run name. You will see a plot that looks something like 
 this:
 
-<iframe src='//gifs.com/embed/59kPxx' frameborder='0' scrolling='no' width='1920px' height='948px' style='-webkit-backface-visibility: hidden;-webkit-transform: scale(1);' ></iframe>
+<p align=center>
 
+<img src="https://raw.githubusercontent.com/Naresh1318/crystal/master/README/crystal_test.gif" alt="crystal gif" width=40%/>
+
+<p align="center"> A realtime plotting and project management library built using Plotly </p>
+ 
+</p>
 
 
 ## How can this be helpful?
