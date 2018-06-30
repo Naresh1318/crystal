@@ -87,7 +87,7 @@ this:
 
 <p align=center>
 
-<img src="https://raw.githubusercontent.com/Naresh1318/crystal/master/README/crystal_test.gif" alt="crystal gif" width=40%/>
+<img src="https://raw.githubusercontent.com/Naresh1318/crystal/master/README/crystal_test.gif" alt="crystal gif" width=40% style="box-shadow: 2px 3px 58px -5px rgba(173,155,173,0.85);"/>
 
 <p align="center"> A realtime plotting and project management library built using Plotly </p>
  
