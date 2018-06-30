@@ -1,0 +1,4 @@
+#!/usr/bin/env python
+from crystal import app
+app.app.run()
+print("Running server!")
