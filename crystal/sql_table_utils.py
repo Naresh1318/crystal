@@ -202,12 +202,15 @@ def get_projects():
     :return: dict -> {<int_keys>: <project_name>}
     """
     conn, c = open_data_base_connection()
-    c.execute("""SELECT project_name FROM main_table""")
-    project_names = np.array(c.fetchall()).squeeze(axis=1)
-    project_names = convert_list_to_dict(project_names)
-    conn.close()
-
-    return project_names
+    try:
+        c.execute("""SELECT project_name FROM main_table""")
+        project_names = np.array(c.fetchall()).squeeze(axis=1)
+        project_names = convert_list_to_dict(project_names)
+        return project_names
+    except sqlite3.OperationalError:
+        logging.info("{} not found".format(run_name))
+    finally:
+        conn.close()
 
 
 def get_runs(project_name):
@@ -216,12 +219,15 @@ def get_runs(project_name):
     :return: dict -> {<int_keys>: <project_name>}
     """
     conn, c = open_data_base_connection()
-    c.execute("""SELECT run_name FROM {}""".format(project_name + "_run_table"))
-    run_names = np.array(c.fetchall()).squeeze(axis=1)
-    run_names = convert_list_to_dict(run_names)
-    conn.close()
-
-    return run_names
+    try:
+        c.execute("""SELECT run_name FROM {}""".format(project_name + "_run_table"))
+        run_names = np.array(c.fetchall()).squeeze(axis=1)
+        run_names = convert_list_to_dict(run_names)
+        return run_names
+    except sqlite3.OperationalError:
+        logging.info("{} not found".format(run_name))
+    finally:
+        conn.close()
 
 
 def get_variables(run_name):
@@ -231,20 +237,25 @@ def get_variables(run_name):
     :return: dict -> {<int_keys>: <variable_name>}
     """
     conn, c = open_data_base_connection()
-
-    # Get latest project
-    c.execute("""SELECT variable_name FROM {}""".format(run_name))
-    variable_names = np.array(c.fetchall()).squeeze(axis=1)
-    variable_names = convert_list_to_dict(variable_names)
-    conn.close()
-
-    return variable_names
+    try:
+        # Get latest project
+        c.execute("""SELECT variable_name FROM {}""".format(run_name))
+        variable_names = np.array(c.fetchall()).squeeze(axis=1)
+        variable_names = convert_list_to_dict(variable_names)
+        return variable_names
+    except sqlite3.OperationalError:
+        logging.info("{} not found".format(run_name))
+    finally:
+        conn.close()
 
 
 def get_variable_update_dicts(current_index, variable_names, selected_run):
     """
-
-    :return:
+    Query appropriate tables and return data to dashboard in the required format.
+    :param current_index: int, current index during update
+    :param variable_names: str, variable name to fetch values from
+    :param selected_run: str, run containing the variable
+    :return: dict, {<variable_name>: [<values>]}
     """
     conn, c = open_data_base_connection()
     data = {}

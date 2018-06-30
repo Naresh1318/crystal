@@ -9,6 +9,7 @@ parser.add_argument("-d", "--database_dir", type=str,
 parser.add_argument("-p", "--port", type=int, default=5000,
                     help="port for crystal dashboard")
 args = parser.parse_args()
+print(args.database_dir)
 app.set_database_dir(args.database_dir)
 app.app.run(port=args.port)
 print("Running server!")

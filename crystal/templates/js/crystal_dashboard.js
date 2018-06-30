@@ -292,7 +292,7 @@ let vue_dashboard = new Vue({
                         const receivedJSON = JSON.parse(this.responseText);
                         if (receivedJSON["0"] !== "__EMPTY") {
                             vm.current_variables = receivedJSON;
-                            this.run_plots_init = true;
+                            vm.run_plots_init = true;
                         }
                         else
                             console.log("No runs found.");
@@ -382,7 +382,6 @@ let vue_dashboard = new Vue({
              */
             this.current_run = run_selected;
             this.get_variables();
-            this.run_plots_init = true;
         },
         toggle_refresh: function () {
             /*

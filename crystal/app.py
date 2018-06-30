@@ -46,11 +46,12 @@ app = CustomFlask(__name__)  # This replaces your existing "app = Flask(__name__
 
 
 def set_database_dir(database_dir):
-    if database_dir != "" or database_dir is not None:
-        utils.dd.set_database_dir(database_dir)
-    else:
+    logging.info(database_dir)
+    if database_dir == "" or database_dir is None:
         logging.info("database_dir: {} is not provided. Using the default directory at {}".
                      format(database_dir, utils.dd.get_database_dir()))
+    else:
+        utils.dd.set_database_dir(database_dir)
 
 
 @app.route('/')
