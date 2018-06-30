@@ -31,6 +31,16 @@
     </head>
 
     <body class="customScrollBar">
+
+    <!-- Libraries -->
+    <!-- Load them here to get a cleaner loading screen -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+    <script>$(document).ready(function() { $('body').bootstrapMaterialDesign(); });</script>
+    <script src="%% url_for('static', filename='js/plotly-latest.min.js') %%"></script>
+    <script src="https://unpkg.com/vue"></script>
+
     <div id="vue-dashboard" style="overflow-x: hidden" class="textContent">
 
         <!-- use the modal component, pass in the prop -->
@@ -288,19 +298,26 @@
                         <div class="modal-container">
                             <div class="modal-header" style="font-family: 'Source Sans Pro', sans-serif;">
                                 <slot name="header">
-                                    <h4>{{title}}<h4/>
+                                    <span style="font-size: 2rem">{{title}}</span>
                                 </slot>
                             </div>
 
                             <div class="modal-body customScrollBar">
                                 <slot name="body">
                                     <div class="m-2" v-for="project in all_projects" @click="get_runs(project)">
-                                        <div class="card row" style="cursor: pointer;">
-                                            <div class="p-2">
-                                                <div class="col">
-                                                    <h5>
-                                                        {{project}}
-                                                    </h5>
+                                        <div class="card row" style="cursor: pointer;border-radius: 0.5rem !important">
+                                            <div class="card-body" style="padding: 1rem">
+                                                <div class="row">
+                                                    <div class="col" style="padding-top: 0.4rem; user-select: none;">
+                                                        <h5>
+                                                            {{project}}
+                                                        </h5>
+                                                    </div>
+                                                    <div class="col-lg-1" @click="delete_project(project)">
+                                                        <i class="material-icons" style="padding-top: 0.2rem">
+                                                            delete_forever
+                                                        </i>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -308,11 +325,20 @@
                                         <div v-for="(runs, project_key) in all_runs">
                                             <div v-if="project_key == project">
                                                 <transition-group tag="div" class="content__list" name="slide-fade">
-                                                <div class="card m-1" v-for="run in runs" @click="delete_run(project, run)" :key="run" style="cursor: pointer;">
-                                                        <div class="card-body">
-                                                            {{run}}
+                                                    <div class="card m-1" v-for="run in runs" :key="run" style="cursor: pointer;border-radius: 0.5rem !important;margin-top: 0.7rem!important;">
+                                                        <div class="card-body" style="padding: 0.8rem">
+                                                            <div class="row" style="padding: 0;">
+                                                                <div class="col" style="padding-top: 0.4rem; user-select: none;">
+                                                                    <h6>{{run}}</h6>
+                                                                </div>
+                                                                <div class="col-lg-1" @click="delete_run(project, run)">
+                                                                    <i class="material-icons" style="padding-top: 0.2rem">
+                                                                        delete_forever
+                                                                    </i>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                </div>
+                                                    </div>
                                                 </transition-group>
                                             </div>
                                         </div>
@@ -340,13 +366,6 @@
         </script>
     </div>
     <br/>
-
-    <!-- Libraries -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
-    <script>$(document).ready(function() { $('body').bootstrapMaterialDesign(); });</script>    <script src="%% url_for('static', filename='js/plotly-latest.min.js') %%"></script>
-    <script src="https://unpkg.com/vue"></script>
 
     <!-- My code -->
     <script> {% include 'js/crystal_dashboard.js' %} </script>

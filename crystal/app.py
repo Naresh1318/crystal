@@ -208,5 +208,22 @@ def delete_run():
     return jsonify({"0": "__EMPTY"})
 
 
+@app.route('/delete_project', methods=['GET', 'POST'])
+def delete_project():
+    """
+    Delete the selected run from the database.
+    :return:
+    """
+    assert request.method == "POST", "POST request expected received {}".format(request.method)
+    if request.method == "POST":
+        try:
+            selections = json.loads(request.form["selections"])
+            utils.drop_project(selections["project"])
+            return jsonify({"response": "deleted {}".format(selections["project"])})
+        except Exception as e:
+            logging.error(e)
+    return jsonify({"0": "__EMPTY"})
+
+
 if __name__ == '__main__':
-    app.run(port=PORT, debug=True)
+    app.run(debug=True)

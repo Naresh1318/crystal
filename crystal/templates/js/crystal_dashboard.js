@@ -89,20 +89,48 @@ modal = Vue.extend({
             rq.send("selected_project="+project);
         },
         delete_run: function (project, run) {
-            // Request all runs
-            let selections = {"project": project, "run": run};
-            let rq = new XMLHttpRequest();
-            rq.onreadystatechange = function(vm) {
-                if (this.readyState === XMLHttpRequest.DONE) {
-                    if (this.status === 200) {
-                        delete vm.all_runs[project][run];
-                        vm.$forceUpdate();
+            let r = confirm("Are you sure?");
+            if (r === true) {
+                // Request all runs
+                let selections = {"project": project, "run": run};
+                let rq = new XMLHttpRequest();
+                rq.onreadystatechange = function(vm) {
+                    if (this.readyState === XMLHttpRequest.DONE) {
+                        if (this.status === 200) {
+                            delete vm.all_runs[project][run];
+                            console.log("Deleted run: " + run);
+                            vm.$forceUpdate();
+                        }
                     }
-                }
-            }.bind(rq, this);
-            rq.open("POST", "/delete_run", true);
-            rq.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-            rq.send("selections="+JSON.stringify(selections));
+                }.bind(rq, this);
+                rq.open("POST", "/delete_run", true);
+                rq.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+                rq.send("selections="+JSON.stringify(selections));
+            } else {
+                console.log("Nothing deleted! Chill!");
+            }
+        },
+        delete_project: function (project) {
+            let r = confirm("Are you sure?");
+            if (r === true) {
+                // Request all runs
+                let selections = {"project": project};
+                let rq = new XMLHttpRequest();
+                rq.onreadystatechange = function(vm) {
+                    if (this.readyState === XMLHttpRequest.DONE) {
+                        if (this.status === 200) {
+                            delete vm.all_runs[project];
+                            console.log("Deleted project: " + project);
+                            vm.$forceUpdate();
+                        }
+                    }
+                }.bind(rq, this);
+                rq.open("POST", "/delete_project", true);
+                rq.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+                rq.send("selections="+JSON.stringify(selections));
+            } else {
+                console.log("Nothing deleted! Chill!");
+            }
         }
 
     },

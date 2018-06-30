@@ -117,7 +117,7 @@ def drop_project(project_name):
 
     # remove one run at a time
     for run in run_names:
-        drop_run(project_name, run, conn)
+        drop_run(project_name, run)
 
     c.execute("DROP TABLE IF EXISTS {}".format(run_table_name))
 
