@@ -87,9 +87,9 @@ this:
 
 <p align=center>
 
-<img src="https://raw.githubusercontent.com/Naresh1318/crystal/master/README/crystal_video.gif" alt="crystal gif" width=95% />
+<img src="https://raw.githubusercontent.com/Naresh1318/crystal/master/README/crystal_video.gif" alt="crystal gif" width=100% />
 
-<p align="center"> A realtime plotting and project management library built using Plotly </p>
+<p align="center"> Crystal Dashboard in action </p>
  
 </p>
 
