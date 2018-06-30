@@ -127,7 +127,6 @@ let vue_dashboard = new Vue({
         run_plots_init: false,                   // Ensures that plots are shown only when the DOM has been updated
                                                  // with the required ids that are used by plotly
         showModal: false,
-        showInstructions: true,
         scalar_variable_values: {},              // Might be used later to animate graphs
         heatmap_variable_values: {},
     },
@@ -214,7 +213,11 @@ let vue_dashboard = new Vue({
             rq.onreadystatechange = function(vm) {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
-                        vm.all_projects = JSON.parse(this.responseText);
+                        const receivedJSON = JSON.parse(this.responseText);
+                        if (receivedJSON["0"] !== "__EMPTY")
+                            vm.all_projects = receivedJSON;
+                        else
+                            console.log("No projects found.")
                     } else {
                         vm.all_projects = {};
                     }
@@ -233,7 +236,11 @@ let vue_dashboard = new Vue({
             rq.onreadystatechange = function(vm) {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
-                        vm.all_runs = JSON.parse(this.responseText);
+                        const receivedJSON = JSON.parse(this.responseText);
+                        if (receivedJSON["0"] !== "__EMPTY")
+                            vm.all_runs = receivedJSON;
+                        else
+                            console.log("No runs found.")
                     } else {
                         vm.all_runs = {};
                     }
@@ -253,8 +260,14 @@ let vue_dashboard = new Vue({
             rq.onreadystatechange = function(vm) {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
-                        vm.current_variables = JSON.parse(this.responseText);
-                        this.run_plots_init = true;
+
+                        const receivedJSON = JSON.parse(this.responseText);
+                        if (receivedJSON["0"] !== "__EMPTY") {
+                            vm.current_variables = receivedJSON;
+                            this.run_plots_init = true;
+                        }
+                        else
+                            console.log("No runs found.");
                     } else {
                         vm.current_variables = {};
                     }
@@ -430,6 +443,15 @@ let vue_dashboard = new Vue({
             this.get_variables();
             this.run_plots_init = true;
         },
+        show_dashboard_window: function () {
+            console.log("show_dashboard_window");
+            // Stop refreshing, not using toggle as it messes with the timer and does not stop it.
+            clearInterval(this.timer);
+            this.refresh_button_text = "Start Refreshing";
+            console.log("Refreshing for plots stopped.");
+            // Change DOM
+            this.current_window = "dashboard";
+        },
         show_mouse_over: function (text) {
             document.getElementById(text+"_text").innerHTML = text;
         },
@@ -441,7 +463,10 @@ let vue_dashboard = new Vue({
         },
         extract_correct_name: function (variable_name) {
             return variable_name.slice(variable_name.indexOf("_")+1);
-        }
+        },
+        isCurrentVariableEmpty: function () {
+            return Object.keys(this.current_variables).length < 1;
+        },
     },
     
     // Lifecycle hook to show plots only after the DOM has been updated with the required ids
@@ -450,7 +475,6 @@ let vue_dashboard = new Vue({
         Show plots only when the DOM is updated with the required ids.
          */
         if (this.run_plots_init === true) {
-            this.showInstructions = false;
             console.log("Run plots init is set to true");
             plots_shown = this.show_plots();
             if (plots_shown) {

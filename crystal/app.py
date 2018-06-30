@@ -109,7 +109,7 @@ def get_projects():
             return jsonify(projects)
     except Exception as e:
         logging.error(e)
-    return
+    return jsonify({"0": "__EMPTY"})
 
 
 @app.route('/get_runs', methods=['POST'])
@@ -132,7 +132,7 @@ def get_runs():
             return jsonify(runs)
         except Exception as e:
             logging.error(e)
-    return
+    return jsonify({"0": "__EMPTY"})
 
 
 @app.route('/get_variables', methods=['POST'])
@@ -163,7 +163,7 @@ def get_variables():
             return jsonify(variables)
         except Exception as e:
             logging.error(e)
-    return
+    return jsonify({"0": "__EMPTY"})
 
 
 @app.route('/get_graph_csv', methods=['POST'])
@@ -180,7 +180,7 @@ def get_graph_csv():
             return send_file(filename, as_attachment=True, attachment_filename='{}.csv'.format(selected_variable_table))
         except Exception as e:
             logging.error(e)
-    return
+    return jsonify({"0": "__EMPTY"})
 
 
 @app.route('/delete_run', methods=['GET', 'POST'])
@@ -197,7 +197,7 @@ def delete_run():
             return jsonify({"response": "deleted {}".format(selections["run"])})
         except Exception as e:
             logging.error(e)
-    return
+    return jsonify({"0": "__EMPTY"})
 
 
 if __name__ == '__main__':
