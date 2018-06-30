@@ -12,7 +12,7 @@ else:
         long_description = f.read()
 
 setup(name='crystal',
-      version='0.1',
+      version='0.1.0',
       description='A realtime plotting library built using plot.ly',
       long_description=long_description,
       long_description_content_type='text/markdown',
